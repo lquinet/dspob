@@ -18,8 +18,9 @@ entity i2s_receiver is
 
 		
 		-- output ports
-		adc_left_reg_out	: out std_logic_vector(AUDIO_LENGTH-1 downto 0);
-		adc_right_reg_out	: out std_logic_vector(AUDIO_LENGTH-1 downto 0)
+		adc_left_reg_out					: out std_logic_vector(AUDIO_LENGTH-1 downto 0);
+		adc_right_reg_out					: out std_logic_vector(AUDIO_LENGTH-1 downto 0);
+		adc_new_sample_received_out	: out std_logic
 	);
 end entity;
 
@@ -44,12 +45,18 @@ begin
 	elsif(rising_edge(bclk_in)) then
 		case fsm is
 
+			-- Wait adclrc_in to be low to start to transmit
 			when IDLE =>
+				adc_left_reg_out <= adc_left_reg_i; 	-- output the left channel received
+				adc_right_reg_out <= adc_right_reg_i;	-- output the right channel received
+				adc_new_sample_received_out <= '1';
 				if adclrc_in = '0' then
+					adc_new_sample_received_out <= '0';
 					FSM <= ST0;
 				end if;
-				
-			when ST0 =>
+			
+			-- left channel is transmitting
+			when ST0 => 
 				adc_left_reg_i(AUDIO_LENGTH-1 downto 0) <= adc_left_reg_i(AUDIO_LENGTH-2 downto 0) & adcdat_in;
 				cnt := cnt +1;
 				if cnt = AUDIO_LENGTH then
@@ -61,7 +68,8 @@ begin
 				if adclrc_in = '1' then
 					fsm <= ST2;
 				end if;
-				
+			
+			-- right channel is transmitting
 			when ST2 =>
 				adc_right_reg_i(AUDIO_LENGTH-1 downto 0) <= adc_right_reg_i(AUDIO_LENGTH-2 downto 0) & adcdat_in;
 				cnt := cnt +1;
@@ -73,6 +81,4 @@ begin
 	end if;
 end process;
 
-adc_left_reg_out <= adc_left_reg_i;
-adc_right_reg_out <= adc_right_reg_i;
 end rtl;
