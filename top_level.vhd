@@ -18,6 +18,8 @@ entity top_level is
 		daclrc_in			: in std_logic;
 		
 		-- output ports
+		test_out				: out std_logic;
+		new_data_2_transmit_out: out std_logic;
 		dacdat_out			: out std_logic
 	);
 end entity;
@@ -70,6 +72,7 @@ component i2s_transmitter is
 		new_data_2_transmit_in	: in std_logic;
 		
 		-- output ports
+		test_out				: out std_logic := '0';
 		dacdat_out			: out std_logic
 	);
 end component;
@@ -111,9 +114,11 @@ begin
 		new_data_2_transmit_in => new_data_2_transmit,
 		
 		-- output ports
+		test_out => test_out,
 		dacdat_out	=> dacdat_out
 	);
 	
+	new_data_2_transmit_out <= new_data_2_transmit;
 	
 
 end rtl;

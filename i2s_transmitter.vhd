@@ -19,7 +19,8 @@ entity i2s_transmitter is
 		new_data_2_transmit_in	: in std_logic;
 		
 		-- output ports
-		dacdat_out			: out std_logic
+		test_out				: out std_logic := '0';
+		dacdat_out			: out std_logic := '0'
 	);
 end entity;
 
@@ -52,21 +53,30 @@ begin
 					dac_left_reg_i	<= dac_left_reg_in;
 					dac_right_reg_i <= dac_right_reg_in;
 					FSM <= ST0;
+					test_out <= '1';
 				end if;
 				
 			-- Wait daclrc_in to be high to be sure to start to transmit at the beginning of the frame
 			when ST0 =>
 				if daclrc_in = '1' then
 					FSM <= ST1;
+					test_out <= '0';
 				end if;
 		
 			-- Wait daclrc_in to be low to start to transmit
 			when ST1 =>
 				if daclrc_in = '0' then
+					-- Start to transmit directly because we see the edge after 1 BCLK clock! beacause BCLK falling edge arrives before DACLRC edge
+					dac_left_reg_i(AUDIO_LENGTH-1 downto 0) <= dac_left_reg_i(AUDIO_LENGTH-2 downto 0) & '0';
+					dacdat_out <= dac_left_reg_i(AUDIO_LENGTH-1);
+					cnt := cnt +1;
+					
+					-- change state
 					FSM <= ST2;
+					test_out <= '1';
 				end if;
 				
-			-- Send left channel
+			-- left channel is transmitting
 			when ST2 =>
 				dac_left_reg_i(AUDIO_LENGTH-1 downto 0) <= dac_left_reg_i(AUDIO_LENGTH-2 downto 0) & '0';
 				dacdat_out <= dac_left_reg_i(AUDIO_LENGTH-1);
@@ -74,16 +84,24 @@ begin
 				if cnt = AUDIO_LENGTH+1 then -- AUDIO_LENGTH+1 because it's a variable: it's updated directly 
 					cnt := 0;
 					fsm <= ST3;
+					test_out <= '0';
 				end if;
 				
 			-- Wait daclrc_in to be low to start to transmit right channel
 			when ST3 =>
 				dacdat_out <= '0';
 				if daclrc_in = '1' then
+					-- Start to transmit directly because we see the edge after 1 BCLK clock! beacause BCLK falling edge arrives before DACLRC edge
+					dac_right_reg_i(AUDIO_LENGTH-1 downto 0) <= dac_right_reg_i(AUDIO_LENGTH-2 downto 0) & '0';
+					dacdat_out <= dac_right_reg_i(AUDIO_LENGTH-1);
+					cnt := cnt +1;
+					
+					-- change state
 					fsm <= ST4;
+					test_out <= '1';
 				end if;
 				
-			-- Send right channel
+			-- right channel is transmitting
 			when ST4 =>
 				dac_right_reg_i(AUDIO_LENGTH-1 downto 0) <= dac_right_reg_i(AUDIO_LENGTH-2 downto 0) & '0';
 				dacdat_out <= dac_right_reg_i(AUDIO_LENGTH-1);
@@ -91,6 +109,7 @@ begin
 				if cnt = AUDIO_LENGTH+1 then
 					cnt := 0;
 					fsm <= IDLE;
+					test_out <= '0';
 				end if;
 		end case;
 	end if;
