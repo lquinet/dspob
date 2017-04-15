@@ -20,6 +20,7 @@ entity top_level is
 		-- output ports
 		test_out				: out std_logic;
 		new_data_2_transmit_out: out std_logic;
+		reset_com_out 		: out std_logic;
 		dacdat_out			: out std_logic
 	);
 end entity;
@@ -31,6 +32,8 @@ signal adc_left_reg_i 	: std_logic_vector(AUDIO_LENGTH-1 downto 0) := (others =>
 signal adc_right_reg_i 	: std_logic_vector(AUDIO_LENGTH-1 downto 0) := (others => '0');
 
 signal new_data_2_transmit : std_logic;
+
+signal reset_com_i : std_logic;
 
 --************* Components declarations ********************--
 component i2s_receiver is
@@ -51,6 +54,7 @@ component i2s_receiver is
 		-- output ports
 		adc_left_reg_out					: out std_logic_vector(AUDIO_LENGTH-1 downto 0);
 		adc_right_reg_out					: out std_logic_vector(AUDIO_LENGTH-1 downto 0);
+		reset_com_out						: out std_logic;
 		adc_new_sample_received_out	: out std_logic
 	);
 end component;
@@ -96,6 +100,7 @@ begin
 		-- output ports
 		adc_left_reg_out	=> adc_left_reg_i,
 		adc_right_reg_out	=> adc_right_reg_i,
+		reset_com_out => reset_com_i,
 		adc_new_sample_received_out => new_data_2_transmit
 	);
 	
@@ -106,7 +111,7 @@ begin
 	port map(
 		-- input ports
 		clk_in 				=> clk_in,
-		reset_in				=> '0',
+		reset_in				=> reset_com_i,
 		bclk_in				=> bclk_in,
 		daclrc_in			=> daclrc_in,
 		dac_left_reg_in	=> adc_left_reg_i,
@@ -119,6 +124,6 @@ begin
 	);
 	
 	new_data_2_transmit_out <= new_data_2_transmit;
-	
+	reset_com_out <= reset_com_i;
 
 end rtl;

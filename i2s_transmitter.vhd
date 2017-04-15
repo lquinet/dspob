@@ -41,6 +41,8 @@ variable cnt: natural:=0;
 begin
 	if reset_in = '1' then
 		fsm <= IDLE;
+		dac_left_reg_i <= (others => '0');
+		dac_right_reg_i <= (others => '0');
 		cnt :=0;
 	elsif(falling_edge(bclk_in)) then
 		case fsm is

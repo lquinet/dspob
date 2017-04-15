@@ -20,6 +20,7 @@ entity i2s_receiver is
 		-- output ports
 		adc_left_reg_out					: out std_logic_vector(AUDIO_LENGTH-1 downto 0);
 		adc_right_reg_out					: out std_logic_vector(AUDIO_LENGTH-1 downto 0);
+		reset_com_out						: out std_logic;
 		adc_new_sample_received_out	: out std_logic := '0'
 	);
 end entity;
@@ -34,14 +35,20 @@ signal fsm	: state_type := IDLE;
 signal adc_left_reg_i 	: std_logic_vector(AUDIO_LENGTH-1 downto 0) := (others => '0');
 signal adc_right_reg_i 	: std_logic_vector(AUDIO_LENGTH-1 downto 0) := (others => '0');
 
+-- reset signal
+signal reset_com_i : std_logic := '0';
+
 begin
 
-process (bclk_in, reset_in)
+-- State machine of the receiver
+process (bclk_in, reset_com_i)
 variable cnt: natural:=0;
 begin
-	if reset_in = '1' then
+	if reset_com_i = '1' then
 		fsm <= IDLE;
 		cnt :=0;
+		adc_left_reg_out <= (others => '0');
+		adc_right_reg_out <= (others => '0');
 	elsif(rising_edge(bclk_in)) then
 		case fsm is
 			
@@ -87,5 +94,94 @@ begin
 		end case;
 	end if;
 end process;
+
+--
+--process (clk_in)
+--constant timeout: natural:=20; -- timout = 20*50Mhz ~= 1 BCLK period
+--variable cnt: natural:=0;
+--variable fsm_var: state_type := IDLE;
+--begin
+--	if(rising_edge(clk_in)) then
+--		case fsm_var is
+--			
+--			when IDLE =>
+--				reset_com_i <= '0';
+--				if BCLk_in = '0' then
+--					fsm_var := ST1;
+--				elsif BCLk_in = '1' then
+--					fsm_var := ST2;
+--				end if;
+--				
+--			-- previous edge was low
+--			when ST1 =>
+--				if BCLk_in = '1' then
+--					cnt := 0;
+--					fsm_var := ST2;
+--				elsif BCLk_in = '0' then
+--					cnt := cnt +1;
+--					if cnt >= timeout then
+--						reset_com_i <= '1';
+--						cnt := 0;
+--						fsm_var := IDLE;
+--					end if;
+--				end if;
+--				
+--			-- previous edge was high
+--			when ST2 =>
+--				if BCLk_in = '0' then
+--					cnt := 0;
+--					fsm_var := ST1;
+--				elsif BCLk_in = '1' then
+--					cnt := cnt +1;
+--					if cnt >= timeout then
+--						reset_com_i <= '1';
+--						cnt := 0;
+--						fsm_var := IDLE;
+--					end if;
+--				end if;
+--				
+--			when others =>
+--				null;
+--			
+--		end case;
+--	end if;
+--end process;
+
+-- Process that reset the communication after a timeout. The timeout is based on the duration between 2 BCLK edges
+process (clk_in)
+constant timeout: natural:=20; -- timout = 20*50Mhz ~= 1 BCLK period
+variable cnt: natural:=0;
+variable isPreviousEdgeLow: boolean:= true;
+begin
+	if(rising_edge(clk_in)) then
+		reset_com_i <= '0';
+		if isPreviousEdgeLow = true then
+			if BCLk_in = '1' then
+				cnt := 0;
+				isPreviousEdgeLow := false;
+			elsif BCLk_in = '0' then
+				cnt := cnt +1;
+				if cnt >= timeout then
+					reset_com_i <= '1';
+					cnt := 0;
+				end if;
+			end if;
+		elsif isPreviousEdgeLow = false then
+			if BCLk_in = '0' then
+				cnt := 0;
+				isPreviousEdgeLow := true;
+			elsif BCLk_in = '1' then
+				cnt := cnt +1;
+				if cnt >= timeout then
+					reset_com_i <= '1';
+					cnt := 0;
+				end if;
+			end if;
+		end if;
+	end if;
+end process;
+
+reset_com_out <= reset_com_i;
+
 
 end rtl;
