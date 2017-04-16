@@ -21,6 +21,7 @@ entity top_level is
 		test_out				: out std_logic;
 		new_data_2_transmit_out: out std_logic;
 		reset_com_out 		: out std_logic;
+		led_out				: out std_logic_vector(17 downto 0);
 		dacdat_out			: out std_logic
 	);
 end entity;
@@ -77,6 +78,7 @@ component i2s_transmitter is
 		
 		-- output ports
 		test_out				: out std_logic := '0';
+		led_out				: out std_logic_vector(17 downto 0) := (others => '0');
 		dacdat_out			: out std_logic
 	);
 end component;
@@ -120,10 +122,13 @@ begin
 		
 		-- output ports
 		test_out => test_out,
+		led_out => led_out,
 		dacdat_out	=> dacdat_out
 	);
 	
 	new_data_2_transmit_out <= new_data_2_transmit;
 	reset_com_out <= reset_com_i;
+	
+	
 
 end rtl;

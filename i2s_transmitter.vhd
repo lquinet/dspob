@@ -20,6 +20,7 @@ entity i2s_transmitter is
 		
 		-- output ports
 		test_out				: out std_logic := '0';
+		led_out				: out std_logic_vector(17 downto 0) := (others => '0');
 		dacdat_out			: out std_logic := '0'
 	);
 end entity;
@@ -43,6 +44,8 @@ begin
 		fsm <= IDLE;
 		dac_left_reg_i <= (others => '0');
 		dac_right_reg_i <= (others => '0');
+		dac_left_reg_in <= (others => '0');
+		dac_right_reg_in <= (others => '0');
 		cnt :=0;
 	elsif(falling_edge(bclk_in)) then
 		case fsm is
@@ -117,4 +120,30 @@ begin
 	end if;
 end process;
 
+-- Process that display data on the leds
+process (clk_in)
+variable daclrcPreviousEdge: std_logic := '1';
+begin
+	if(rising_edge(clk_in)) then
+		if daclrcPreviousEdge = '1' then
+			if daclrc_in = '0' then
+				daclrcPreviousEdge := '0';
+				led_out(17 downto 0) <= dac_left_reg_in(AUDIO_LENGTH-1 downto AUDIO_LENGTH-17-1);
+			end if;
+		elsif daclrcPreviousEdge = '0' then
+			if daclrc_in = '1' then
+				daclrcPreviousEdge := '1';
+				led_out(17 downto 0) <= dac_right_reg_in(AUDIO_LENGTH-1 downto AUDIO_LENGTH-17-1);
+			end if;
+		end if;
+	end if;
+end process;
+
+---- Process that display data on the leds (retinal persistence = 1/20 s)
+--process (daclrc_in)
+--constant NUM_SAMPLES: natural:=2400; -- NUM_SAMPLES = 48000/20 = 2400
+--variable cnt: std_logic := '1';
+--begin
+--	if(rising_edge(daclrc_in)) then
+		
 end rtl;

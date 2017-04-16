@@ -95,61 +95,10 @@ begin
 	end if;
 end process;
 
---
---process (clk_in)
---constant timeout: natural:=20; -- timout = 20*50Mhz ~= 1 BCLK period
---variable cnt: natural:=0;
---variable fsm_var: state_type := IDLE;
---begin
---	if(rising_edge(clk_in)) then
---		case fsm_var is
---			
---			when IDLE =>
---				reset_com_i <= '0';
---				if BCLk_in = '0' then
---					fsm_var := ST1;
---				elsif BCLk_in = '1' then
---					fsm_var := ST2;
---				end if;
---				
---			-- previous edge was low
---			when ST1 =>
---				if BCLk_in = '1' then
---					cnt := 0;
---					fsm_var := ST2;
---				elsif BCLk_in = '0' then
---					cnt := cnt +1;
---					if cnt >= timeout then
---						reset_com_i <= '1';
---						cnt := 0;
---						fsm_var := IDLE;
---					end if;
---				end if;
---				
---			-- previous edge was high
---			when ST2 =>
---				if BCLk_in = '0' then
---					cnt := 0;
---					fsm_var := ST1;
---				elsif BCLk_in = '1' then
---					cnt := cnt +1;
---					if cnt >= timeout then
---						reset_com_i <= '1';
---						cnt := 0;
---						fsm_var := IDLE;
---					end if;
---				end if;
---				
---			when others =>
---				null;
---			
---		end case;
---	end if;
---end process;
 
 -- Process that reset the communication after a timeout. The timeout is based on the duration between 2 BCLK edges
 process (clk_in)
-constant timeout: natural:=20; -- timout = 20*50Mhz ~= 1 BCLK period
+constant TIMEOUT: natural:=20; -- timout = 20*50Mhz ~= 1 BCLK period
 variable cnt: natural:=0;
 variable isPreviousEdgeLow: boolean:= true;
 begin
@@ -161,7 +110,7 @@ begin
 				isPreviousEdgeLow := false;
 			elsif BCLk_in = '0' then
 				cnt := cnt +1;
-				if cnt >= timeout then
+				if cnt >= TIMEOUT then
 					reset_com_i <= '1';
 					cnt := 0;
 				end if;
@@ -172,7 +121,7 @@ begin
 				isPreviousEdgeLow := true;
 			elsif BCLk_in = '1' then
 				cnt := cnt +1;
-				if cnt >= timeout then
+				if cnt >= TIMEOUT then
 					reset_com_i <= '1';
 					cnt := 0;
 				end if;
