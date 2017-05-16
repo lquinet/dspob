@@ -44,6 +44,8 @@ begin
 		fsm <= IDLE;
 		dac_left_reg_i <= (others => '0');
 		dac_right_reg_i <= (others => '0');
+		dac_left_reg_in <= (others => '0');
+		dac_right_reg_in <= (others => '0');
 		cnt :=0;
 	elsif(falling_edge(bclk_in)) then
 		case fsm is
@@ -119,12 +121,21 @@ begin
 end process;
 
 -- Process that display data on the leds
-process (new_data_2_transmit_in, reset_in)
+process (clk_in)
+variable daclrcPreviousEdge: std_logic := '1';
 begin
-	if reset_in = '1' then
-		led_out(17 downto 0) <= (others => '0');
-	elsif(rising_edge(new_data_2_transmit_in)) then
-		led_out(17 downto 0) <= dac_left_reg_in(AUDIO_LENGTH-1 downto AUDIO_LENGTH-17-1);
+	if(rising_edge(clk_in)) then
+		if daclrcPreviousEdge = '1' then
+			if daclrc_in = '0' then
+				daclrcPreviousEdge := '0';
+				led_out(17 downto 0) <= dac_left_reg_in(AUDIO_LENGTH-1 downto AUDIO_LENGTH-17-1);
+			end if;
+		elsif daclrcPreviousEdge = '0' then
+			if daclrc_in = '1' then
+				daclrcPreviousEdge := '1';
+				led_out(17 downto 0) <= dac_right_reg_in(AUDIO_LENGTH-1 downto AUDIO_LENGTH-17-1);
+			end if;
+		end if;
 	end if;
 end process;
 
