@@ -1,0 +1,2653 @@
+
+bin\Debug\COMMAND168_CODEC.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000f96  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .fuse         00000003  00820000  00820000  0000100a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .debug_aranges 00000100  00000000  00000000  0000100d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_pubnames 0000030e  00000000  00000000  0000110d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   00000b74  00000000  00000000  0000141b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 000003e3  00000000  00000000  00001f8f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_line   00000d65  00000000  00000000  00002372  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_frame  000002e0  00000000  00000000  000030d8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    000004d9  00000000  00000000  000033b8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+   4:	0c 94 5f 07 	jmp	0xebe	; 0xebe <__vector_1>
+   8:	0c 94 94 07 	jmp	0xf28	; 0xf28 <__vector_2>
+   c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  10:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  14:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  18:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  1c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  20:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  24:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  28:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  2c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  30:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  34:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  38:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  3c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  40:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  44:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  48:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  4c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  50:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  54:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  58:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  5c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  60:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  64:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d4 e0       	ldi	r29, 0x04	; 4
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+  74:	0e 94 4c 07 	call	0xe98	; 0xe98 <main>
+  78:	0c 94 c9 07 	jmp	0xf92	; 0xf92 <_exit>
+
+0000007c <__bad_interrupt>:
+  7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000080 <codec_mic>:
+WM8731_REG_DIGITAL_PATH       config filtering option          digital_p
+WM8731_REG_PDOWN_CTRL         power on/off inputs & outputs    power
+WM8731_REG_ACTIVE_CTRL        power on/off the DSP part        dsp
+***********************************************************/
+void codec_mic()
+{
+  80:	df 93       	push	r29
+  82:	cf 93       	push	r28
+  84:	00 d0       	rcall	.+0      	; 0x86 <codec_mic+0x6>
+  86:	00 d0       	rcall	.+0      	; 0x88 <codec_mic+0x8>
+  88:	0f 92       	push	r0
+  8a:	cd b7       	in	r28, 0x3d	; 61
+  8c:	de b7       	in	r29, 0x3e	; 62
+    unsigned char digital_p;
+    unsigned char power;
+    // unsigned char dsp;
+
+    /** VARIABLES SETUP **/
+    lrhpout =   (0<<LRHPBOTH)|
+  8e:	8f ef       	ldi	r24, 0xFF	; 255
+  90:	90 e0       	ldi	r25, 0x00	; 0
+  92:	9d 83       	std	Y+5, r25	; 0x05
+  94:	8c 83       	std	Y+4, r24	; 0x04
+                (1<<LHPVOL3)| // VOLUME
+                (1<<LHPVOL2)| // VOLUME
+                (1<<LHPVOL1)| // VOLUME
+                (1<<LHPVOL0); // VOLUME
+
+    analog_p =  (0<<SIDEATT1)| // GAIN FOR SIDETONE
+  96:	84 e2       	ldi	r24, 0x24	; 36
+  98:	8b 83       	std	Y+3, r24	; 0x03
+                (0<<BYPASS)|   // BYPASS => FOR THE LINE INPUT
+                (1<<INSEL)|    // SELECT THE INPUT TO THE ADC
+                (0<<MUTEMIC)|  // MUTE THE MIC INPUT
+                (0<<MICBOOST); // BOOST FOR THE MIC INPUT
+
+    digital_p = (0<<HPOR)|   // STORE DC VALUE WHEN ADCHPH IS ACTIVE
+  9a:	81 e0       	ldi	r24, 0x01	; 1
+  9c:	8a 83       	std	Y+2, r24	; 0x02
+                (0<<DEEMP1)|
+                (0<<DEEMP0)|
+                (1<<ADCHPD); // ACTIVATE THE OUTPUT FILTER
+
+    // BE CAREFULE FOR THE POWER !!! 0 = ON | 1 = OFF
+    power =     (0<<POWEROFF)| // FOR THE WHOLE CODEC
+  9e:	8d e6       	ldi	r24, 0x6D	; 109
+  a0:	89 83       	std	Y+1, r24	; 0x01
+                (1<<LINEINPD); // FOR THE LINE INPUT
+
+    // dsp =       (0<<ACTIVE); // ACTIVE OR NOT THE DSP PART
+
+    /** COMMUNICATION **/
+    I2C_init();
+  a2:	0e 94 49 06 	call	0xc92	; 0xc92 <I2C_init>
+    codec_CMD(WM8731_REG_LLINE_IN,WM8731_reg_lline_in); // DEFAULT VALUES
+  a6:	80 e0       	ldi	r24, 0x00	; 0
+  a8:	67 e9       	ldi	r22, 0x97	; 151
+  aa:	70 e0       	ldi	r23, 0x00	; 0
+  ac:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RLINE_IN,WM8731_reg_rline_in); // DEFAULT VALUES
+  b0:	81 e0       	ldi	r24, 0x01	; 1
+  b2:	67 e9       	ldi	r22, 0x97	; 151
+  b4:	70 e0       	ldi	r23, 0x00	; 0
+  b6:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,0);
+  ba:	89 e0       	ldi	r24, 0x09	; 9
+  bc:	60 e0       	ldi	r22, 0x00	; 0
+  be:	70 e0       	ldi	r23, 0x00	; 0
+  c0:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LHPHONE_OUT,lrhpout);
+  c4:	2c 81       	ldd	r18, Y+4	; 0x04
+  c6:	3d 81       	ldd	r19, Y+5	; 0x05
+  c8:	82 e0       	ldi	r24, 0x02	; 2
+  ca:	b9 01       	movw	r22, r18
+  cc:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RHPHONE_OUT,lrhpout);
+  d0:	2c 81       	ldd	r18, Y+4	; 0x04
+  d2:	3d 81       	ldd	r19, Y+5	; 0x05
+  d4:	83 e0       	ldi	r24, 0x03	; 3
+  d6:	b9 01       	movw	r22, r18
+  d8:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ANALOG_PATH,analog_p);
+  dc:	8b 81       	ldd	r24, Y+3	; 0x03
+  de:	28 2f       	mov	r18, r24
+  e0:	30 e0       	ldi	r19, 0x00	; 0
+  e2:	84 e0       	ldi	r24, 0x04	; 4
+  e4:	b9 01       	movw	r22, r18
+  e6:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_PATH,digital_p);
+  ea:	8a 81       	ldd	r24, Y+2	; 0x02
+  ec:	28 2f       	mov	r18, r24
+  ee:	30 e0       	ldi	r19, 0x00	; 0
+  f0:	85 e0       	ldi	r24, 0x05	; 5
+  f2:	b9 01       	movw	r22, r18
+  f4:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_PDOWN_CTRL,power);
+  f8:	89 81       	ldd	r24, Y+1	; 0x01
+  fa:	28 2f       	mov	r18, r24
+  fc:	30 e0       	ldi	r19, 0x00	; 0
+  fe:	86 e0       	ldi	r24, 0x06	; 6
+ 100:	b9 01       	movw	r22, r18
+ 102:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_IF,WM8731_reg_digital_if); // DEFAULT VALUES
+ 106:	87 e0       	ldi	r24, 0x07	; 7
+ 108:	6a e0       	ldi	r22, 0x0A	; 10
+ 10a:	70 e0       	ldi	r23, 0x00	; 0
+ 10c:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_SAMPLING_CTRL,WM8731_reg_sampling_ctrl); // DEFAULT VALUES
+ 110:	88 e0       	ldi	r24, 0x08	; 8
+ 112:	60 e0       	ldi	r22, 0x00	; 0
+ 114:	70 e0       	ldi	r23, 0x00	; 0
+ 116:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+
+}
+ 11a:	0f 90       	pop	r0
+ 11c:	0f 90       	pop	r0
+ 11e:	0f 90       	pop	r0
+ 120:	0f 90       	pop	r0
+ 122:	0f 90       	pop	r0
+ 124:	cf 91       	pop	r28
+ 126:	df 91       	pop	r29
+ 128:	08 95       	ret
+
+0000012a <codec_line>:
+WM8731_REG_DIGITAL_PATH       config filtering option          digital_p
+WM8731_REG_PDOWN_CTRL         power on/off inputs & outputs    power
+WM8731_REG_ACTIVE_CTRL        power on/off the DSP part        dsp
+***********************************************************/
+void codec_line()
+{
+ 12a:	df 93       	push	r29
+ 12c:	cf 93       	push	r28
+ 12e:	cd b7       	in	r28, 0x3d	; 61
+ 130:	de b7       	in	r29, 0x3e	; 62
+ 132:	27 97       	sbiw	r28, 0x07	; 7
+ 134:	0f b6       	in	r0, 0x3f	; 63
+ 136:	f8 94       	cli
+ 138:	de bf       	out	0x3e, r29	; 62
+ 13a:	0f be       	out	0x3f, r0	; 63
+ 13c:	cd bf       	out	0x3d, r28	; 61
+    unsigned char digital_p;
+    unsigned char power;
+    // unsigned char dsp;
+
+    /** VARIABLES SETUP **/
+    lrline =    (0<<LRINBOTH)|
+ 13e:	87 e1       	ldi	r24, 0x17	; 23
+ 140:	90 e0       	ldi	r25, 0x00	; 0
+ 142:	9f 83       	std	Y+7, r25	; 0x07
+ 144:	8e 83       	std	Y+6, r24	; 0x06
+                (0<<LINVOL3)|  // VOLUME
+                (1<<LINVOL2)|  // VOLUME
+                (1<<LINVOL1)|  // VOLUME
+                (1<<LINVOL0);  // VOLUME
+
+    lrhpout =   (0<<LRHPBOTH)|
+ 146:	89 ef       	ldi	r24, 0xF9	; 249
+ 148:	90 e0       	ldi	r25, 0x00	; 0
+ 14a:	9d 83       	std	Y+5, r25	; 0x05
+ 14c:	8c 83       	std	Y+4, r24	; 0x04
+                (1<<LHPVOL3)| // VOLUME
+                (0<<LHPVOL2)| // VOLUME
+                (0<<LHPVOL1)| // VOLUME
+                (1<<LHPVOL0); // VOLUME
+
+    analog_p =  (0<<SIDEATT1)| // GAIN FOR SIDETONE
+ 14e:	88 e0       	ldi	r24, 0x08	; 8
+ 150:	8b 83       	std	Y+3, r24	; 0x03
+                (1<<BYPASS)|   // BYPASS => FOR THE LINE INPUT
+                (0<<INSEL)|    // SELECT THE INPUT TO THE ADC
+                (0<<MUTEMIC)|  // MUTE THE MIC INPUT
+                (0<<MICBOOST); // BOOST FOR THE MIC INPUT
+
+    digital_p = (0<<HPOR)|   // STORE DC VALUE WHEN ADCHPH IS ACTIVE
+ 152:	81 e0       	ldi	r24, 0x01	; 1
+ 154:	8a 83       	std	Y+2, r24	; 0x02
+                (0<<DEEMP1)|
+                (0<<DEEMP0)|
+                (1<<ADCHPD); // ACTIVATE THE OUTPUT FILTER
+
+    // BE CAREFULE FOR THE POWER !!! 0 = ON | 1 = OFF
+    power =     (0<<POWEROFF)| // FOR THE WHOLE CODEC
+ 156:	8e e6       	ldi	r24, 0x6E	; 110
+ 158:	89 83       	std	Y+1, r24	; 0x01
+                (0<<LINEINPD); // FOR THE LINE INPUT
+
+    // dsp =       (0<<ACTIVE); // ACTIVE OR NOT THE DSP PART
+
+    /** COMMUNICATION **/
+    I2C_init();
+ 15a:	0e 94 49 06 	call	0xc92	; 0xc92 <I2C_init>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,0);
+ 15e:	89 e0       	ldi	r24, 0x09	; 9
+ 160:	60 e0       	ldi	r22, 0x00	; 0
+ 162:	70 e0       	ldi	r23, 0x00	; 0
+ 164:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LLINE_IN,lrline);
+ 168:	2e 81       	ldd	r18, Y+6	; 0x06
+ 16a:	3f 81       	ldd	r19, Y+7	; 0x07
+ 16c:	80 e0       	ldi	r24, 0x00	; 0
+ 16e:	b9 01       	movw	r22, r18
+ 170:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RLINE_IN,lrline);
+ 174:	2e 81       	ldd	r18, Y+6	; 0x06
+ 176:	3f 81       	ldd	r19, Y+7	; 0x07
+ 178:	81 e0       	ldi	r24, 0x01	; 1
+ 17a:	b9 01       	movw	r22, r18
+ 17c:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LHPHONE_OUT,lrhpout);
+ 180:	2c 81       	ldd	r18, Y+4	; 0x04
+ 182:	3d 81       	ldd	r19, Y+5	; 0x05
+ 184:	82 e0       	ldi	r24, 0x02	; 2
+ 186:	b9 01       	movw	r22, r18
+ 188:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RHPHONE_OUT,lrhpout);
+ 18c:	2c 81       	ldd	r18, Y+4	; 0x04
+ 18e:	3d 81       	ldd	r19, Y+5	; 0x05
+ 190:	83 e0       	ldi	r24, 0x03	; 3
+ 192:	b9 01       	movw	r22, r18
+ 194:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ANALOG_PATH,analog_p);
+ 198:	8b 81       	ldd	r24, Y+3	; 0x03
+ 19a:	28 2f       	mov	r18, r24
+ 19c:	30 e0       	ldi	r19, 0x00	; 0
+ 19e:	84 e0       	ldi	r24, 0x04	; 4
+ 1a0:	b9 01       	movw	r22, r18
+ 1a2:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_PATH,digital_p);
+ 1a6:	8a 81       	ldd	r24, Y+2	; 0x02
+ 1a8:	28 2f       	mov	r18, r24
+ 1aa:	30 e0       	ldi	r19, 0x00	; 0
+ 1ac:	85 e0       	ldi	r24, 0x05	; 5
+ 1ae:	b9 01       	movw	r22, r18
+ 1b0:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_PDOWN_CTRL,power);
+ 1b4:	89 81       	ldd	r24, Y+1	; 0x01
+ 1b6:	28 2f       	mov	r18, r24
+ 1b8:	30 e0       	ldi	r19, 0x00	; 0
+ 1ba:	86 e0       	ldi	r24, 0x06	; 6
+ 1bc:	b9 01       	movw	r22, r18
+ 1be:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_IF,WM8731_reg_digital_if); // DEFAULT VALUES
+ 1c2:	87 e0       	ldi	r24, 0x07	; 7
+ 1c4:	6a e0       	ldi	r22, 0x0A	; 10
+ 1c6:	70 e0       	ldi	r23, 0x00	; 0
+ 1c8:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_SAMPLING_CTRL,WM8731_reg_sampling_ctrl); // DEFAULT VALUES
+ 1cc:	88 e0       	ldi	r24, 0x08	; 8
+ 1ce:	60 e0       	ldi	r22, 0x00	; 0
+ 1d0:	70 e0       	ldi	r23, 0x00	; 0
+ 1d2:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+
+}
+ 1d6:	27 96       	adiw	r28, 0x07	; 7
+ 1d8:	0f b6       	in	r0, 0x3f	; 63
+ 1da:	f8 94       	cli
+ 1dc:	de bf       	out	0x3e, r29	; 62
+ 1de:	0f be       	out	0x3f, r0	; 63
+ 1e0:	cd bf       	out	0x3d, r28	; 61
+ 1e2:	cf 91       	pop	r28
+ 1e4:	df 91       	pop	r29
+ 1e6:	08 95       	ret
+
+000001e8 <codec_CMD>:
+* NAME: codec_CMD(char address, unsigned int cmd)
+* DESCRIPTION: create a frame to send to the codec
+* RETURN: none
+***********************************************************/
+void codec_CMD(char address, unsigned int cmd)
+{
+ 1e8:	df 93       	push	r29
+ 1ea:	cf 93       	push	r28
+ 1ec:	00 d0       	rcall	.+0      	; 0x1ee <codec_CMD+0x6>
+ 1ee:	00 d0       	rcall	.+0      	; 0x1f0 <codec_CMD+0x8>
+ 1f0:	cd b7       	in	r28, 0x3d	; 61
+ 1f2:	de b7       	in	r29, 0x3e	; 62
+ 1f4:	8a 83       	std	Y+2, r24	; 0x02
+ 1f6:	7c 83       	std	Y+4, r23	; 0x04
+ 1f8:	6b 83       	std	Y+3, r22	; 0x03
+    char addr;
+    // B[15:9] Are Control Address Bits
+    // B[8:0]  Are Control Data Bits
+    addr = address << 1;                            // Shift left for one positions
+ 1fa:	8a 81       	ldd	r24, Y+2	; 0x02
+ 1fc:	99 27       	eor	r25, r25
+ 1fe:	87 fd       	sbrc	r24, 7
+ 200:	90 95       	com	r25
+ 202:	88 0f       	add	r24, r24
+ 204:	99 1f       	adc	r25, r25
+ 206:	89 83       	std	Y+1, r24	; 0x01
+    addr = addr | (getHigh(cmd) & 1);
+ 208:	8b 81       	ldd	r24, Y+3	; 0x03
+ 20a:	9c 81       	ldd	r25, Y+4	; 0x04
+ 20c:	89 2f       	mov	r24, r25
+ 20e:	99 27       	eor	r25, r25
+ 210:	98 2f       	mov	r25, r24
+ 212:	91 70       	andi	r25, 0x01	; 1
+ 214:	89 81       	ldd	r24, Y+1	; 0x01
+ 216:	89 2b       	or	r24, r25
+ 218:	89 83       	std	Y+1, r24	; 0x01
+
+    I2C_start();                                    // Start I2C2 module
+ 21a:	0e 94 5a 06 	call	0xcb4	; 0xcb4 <I2C_start>
+    I2C_write(WM8731_ADDRESS,HARD_ADDR);            // Write Address of WM8731 chip
+ 21e:	84 e3       	ldi	r24, 0x34	; 52
+ 220:	61 e0       	ldi	r22, 0x01	; 1
+ 222:	70 e0       	ldi	r23, 0x00	; 0
+ 224:	0e 94 76 06 	call	0xcec	; 0xcec <I2C_write>
+    I2C_write(addr,SOFT_ADDR);                      // Write register address
+ 228:	89 81       	ldd	r24, Y+1	; 0x01
+ 22a:	62 e0       	ldi	r22, 0x02	; 2
+ 22c:	70 e0       	ldi	r23, 0x00	; 0
+ 22e:	0e 94 76 06 	call	0xcec	; 0xcec <I2C_write>
+    I2C_write(getLow(cmd),WR_DATA);                 // Write command
+ 232:	8b 81       	ldd	r24, Y+3	; 0x03
+ 234:	63 e0       	ldi	r22, 0x03	; 3
+ 236:	70 e0       	ldi	r23, 0x00	; 0
+ 238:	0e 94 76 06 	call	0xcec	; 0xcec <I2C_write>
+    I2C_stop();                                     // Stop I2C2 module
+ 23c:	0e 94 d1 06 	call	0xda2	; 0xda2 <I2C_stop>
+
+}
+ 240:	0f 90       	pop	r0
+ 242:	0f 90       	pop	r0
+ 244:	0f 90       	pop	r0
+ 246:	0f 90       	pop	r0
+ 248:	cf 91       	pop	r28
+ 24a:	df 91       	pop	r29
+ 24c:	08 95       	ret
+
+0000024e <codec_mic_ADC>:
+WM8731_REG_DIGITAL_IF         config digital path              digital_if
+WM8731_REG_SAMPLING_CTRL      config sampling options          sampling
+WM8731_REG_ACTIVE_CTRL        power on/off the DSP part        dsp
+***********************************************************/
+void codec_mic_ADC()
+{
+ 24e:	df 93       	push	r29
+ 250:	cf 93       	push	r28
+ 252:	cd b7       	in	r28, 0x3d	; 61
+ 254:	de b7       	in	r29, 0x3e	; 62
+ 256:	27 97       	sbiw	r28, 0x07	; 7
+ 258:	0f b6       	in	r0, 0x3f	; 63
+ 25a:	f8 94       	cli
+ 25c:	de bf       	out	0x3e, r29	; 62
+ 25e:	0f be       	out	0x3f, r0	; 63
+ 260:	cd bf       	out	0x3d, r28	; 61
+    unsigned char digital_if;
+    unsigned char sampling;
+    // unsigned char dsp;
+
+    /** VARIABLES SETUP **/
+    lrhpout =    (0<<LRHPBOTH)|
+ 262:	8f e7       	ldi	r24, 0x7F	; 127
+ 264:	90 e0       	ldi	r25, 0x00	; 0
+ 266:	9f 83       	std	Y+7, r25	; 0x07
+ 268:	8e 83       	std	Y+6, r24	; 0x06
+                 (1<<LHPVOL3)| // VOLUME
+                 (1<<LHPVOL2)| // VOLUME
+                 (1<<LHPVOL1)| // VOLUME
+                 (1<<LHPVOL0); // VOLUME
+
+    analog_p =   (0<<SIDEATT1)| // GAIN FOR SIDETONE
+ 26a:	84 e1       	ldi	r24, 0x14	; 20
+ 26c:	8d 83       	std	Y+5, r24	; 0x05
+                 (0<<BYPASS)|   // BYPASS => FOR THE LINE INPUT
+                 (1<<INSEL)|    // SELECT THE INPUT TO THE ADC
+                 (0<<MUTEMIC)|  // MUTE THE MIC INPUT
+                 (0<<MICBOOST); // BOOST FOR THE MIC INPUT
+
+    digital_p =  (0<<HPOR)|   // STORE DC VALUE WHEN ADCHPH IS ACTIVE
+ 26e:	86 e0       	ldi	r24, 0x06	; 6
+ 270:	8c 83       	std	Y+4, r24	; 0x04
+                 (1<<DEEMP1)|
+                 (1<<DEEMP0)|
+                 (0<<ADCHPD); // ACTIVATE THE OUTPUT FILTER
+
+    // BE CAREFULE FOR THE POWER !!! 0 = ON | 1 = OFF
+    power =      (0<<POWEROFF)| // FOR THE WHOLE CODEC
+ 272:	1b 82       	std	Y+3, r1	; 0x03
+                 (0<<DACPD)|    // FOR THE DAC
+                 (0<<ADCPD)|    // FOR THE ADC
+                 (0<<MICPD)|    // FOR THE MIC INPUT
+                 (0<<LINEINPD); // FOR THE LINE INPUT
+
+    digital_if = (0<<BCLKINV)| // INVERT BCLK
+ 274:	81 e0       	ldi	r24, 0x01	; 1
+ 276:	8a 83       	std	Y+2, r24	; 0x02
+                 (0<<IWL1)|    // BITS SAMPLING
+                 (0<<IWL0)|    // BITS SAMPLING
+                 (0<<FORMAT1)| // COMMUNICATION TYPE
+                 (1<<FORMAT0); // COMMUNICATION TYPE
+
+    sampling =   (0<<CLKODIV2)| // DIVIDE CLOCK OUT Acc2 CLOCK CORE
+ 278:	82 e0       	ldi	r24, 0x02	; 2
+ 27a:	89 83       	std	Y+1, r24	; 0x01
+                 (0<<USB_NORM); // NORMAL OR USB MODE
+
+    // dsp =        (0<<ACTIVE); // ACTIVE OR NOT THE DSP PART
+
+    /** COMMUNICATION **/
+    I2C_init();
+ 27c:	0e 94 49 06 	call	0xc92	; 0xc92 <I2C_init>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,0);
+ 280:	89 e0       	ldi	r24, 0x09	; 9
+ 282:	60 e0       	ldi	r22, 0x00	; 0
+ 284:	70 e0       	ldi	r23, 0x00	; 0
+ 286:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LHPHONE_OUT,lrhpout);
+ 28a:	2e 81       	ldd	r18, Y+6	; 0x06
+ 28c:	3f 81       	ldd	r19, Y+7	; 0x07
+ 28e:	82 e0       	ldi	r24, 0x02	; 2
+ 290:	b9 01       	movw	r22, r18
+ 292:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RHPHONE_OUT,lrhpout);
+ 296:	2e 81       	ldd	r18, Y+6	; 0x06
+ 298:	3f 81       	ldd	r19, Y+7	; 0x07
+ 29a:	83 e0       	ldi	r24, 0x03	; 3
+ 29c:	b9 01       	movw	r22, r18
+ 29e:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ANALOG_PATH,analog_p);
+ 2a2:	8d 81       	ldd	r24, Y+5	; 0x05
+ 2a4:	28 2f       	mov	r18, r24
+ 2a6:	30 e0       	ldi	r19, 0x00	; 0
+ 2a8:	84 e0       	ldi	r24, 0x04	; 4
+ 2aa:	b9 01       	movw	r22, r18
+ 2ac:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_PATH,digital_p);
+ 2b0:	8c 81       	ldd	r24, Y+4	; 0x04
+ 2b2:	28 2f       	mov	r18, r24
+ 2b4:	30 e0       	ldi	r19, 0x00	; 0
+ 2b6:	85 e0       	ldi	r24, 0x05	; 5
+ 2b8:	b9 01       	movw	r22, r18
+ 2ba:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_PDOWN_CTRL,power);
+ 2be:	8b 81       	ldd	r24, Y+3	; 0x03
+ 2c0:	28 2f       	mov	r18, r24
+ 2c2:	30 e0       	ldi	r19, 0x00	; 0
+ 2c4:	86 e0       	ldi	r24, 0x06	; 6
+ 2c6:	b9 01       	movw	r22, r18
+ 2c8:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_IF,digital_if);
+ 2cc:	8a 81       	ldd	r24, Y+2	; 0x02
+ 2ce:	28 2f       	mov	r18, r24
+ 2d0:	30 e0       	ldi	r19, 0x00	; 0
+ 2d2:	87 e0       	ldi	r24, 0x07	; 7
+ 2d4:	b9 01       	movw	r22, r18
+ 2d6:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_SAMPLING_CTRL,sampling);
+ 2da:	89 81       	ldd	r24, Y+1	; 0x01
+ 2dc:	28 2f       	mov	r18, r24
+ 2de:	30 e0       	ldi	r19, 0x00	; 0
+ 2e0:	88 e0       	ldi	r24, 0x08	; 8
+ 2e2:	b9 01       	movw	r22, r18
+ 2e4:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,1);
+ 2e8:	89 e0       	ldi	r24, 0x09	; 9
+ 2ea:	61 e0       	ldi	r22, 0x01	; 1
+ 2ec:	70 e0       	ldi	r23, 0x00	; 0
+ 2ee:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+
+}
+ 2f2:	27 96       	adiw	r28, 0x07	; 7
+ 2f4:	0f b6       	in	r0, 0x3f	; 63
+ 2f6:	f8 94       	cli
+ 2f8:	de bf       	out	0x3e, r29	; 62
+ 2fa:	0f be       	out	0x3f, r0	; 63
+ 2fc:	cd bf       	out	0x3d, r28	; 61
+ 2fe:	cf 91       	pop	r28
+ 300:	df 91       	pop	r29
+ 302:	08 95       	ret
+
+00000304 <codec_line_ADC>:
+WM8731_REG_DIGITAL_IF         config digital path              digital_if
+WM8731_REG_SAMPLING_CTRL      config sampling options          sampling
+WM8731_REG_ACTIVE_CTRL        power on/off the DSP part        dsp
+***********************************************************/
+void codec_line_ADC()
+{
+ 304:	df 93       	push	r29
+ 306:	cf 93       	push	r28
+ 308:	cd b7       	in	r28, 0x3d	; 61
+ 30a:	de b7       	in	r29, 0x3e	; 62
+ 30c:	29 97       	sbiw	r28, 0x09	; 9
+ 30e:	0f b6       	in	r0, 0x3f	; 63
+ 310:	f8 94       	cli
+ 312:	de bf       	out	0x3e, r29	; 62
+ 314:	0f be       	out	0x3f, r0	; 63
+ 316:	cd bf       	out	0x3d, r28	; 61
+    unsigned char digital_if;
+    unsigned char sampling;
+    // unsigned char dsp;
+
+    /** VARIABLES SETUP **/
+    lrline =    (0<<LRINBOTH)|
+ 318:	87 e1       	ldi	r24, 0x17	; 23
+ 31a:	90 e0       	ldi	r25, 0x00	; 0
+ 31c:	99 87       	std	Y+9, r25	; 0x09
+ 31e:	88 87       	std	Y+8, r24	; 0x08
+                (0<<LINVOL3)|  // VOLUME
+                (1<<LINVOL2)|  // VOLUME
+                (1<<LINVOL1)|  // VOLUME
+                (1<<LINVOL0);  // VOLUME
+
+    lrhpout =    (0<<LRHPBOTH)|
+ 320:	89 e7       	ldi	r24, 0x79	; 121
+ 322:	90 e0       	ldi	r25, 0x00	; 0
+ 324:	9f 83       	std	Y+7, r25	; 0x07
+ 326:	8e 83       	std	Y+6, r24	; 0x06
+                 (1<<LHPVOL3)| // VOLUME
+                 (0<<LHPVOL2)| // VOLUME
+                 (0<<LHPVOL1)| // VOLUME
+                 (1<<LHPVOL0); // VOLUME
+
+    analog_p =   (0<<SIDEATT1)| // GAIN FOR SIDETONE
+ 328:	80 e1       	ldi	r24, 0x10	; 16
+ 32a:	8d 83       	std	Y+5, r24	; 0x05
+                 (0<<BYPASS)|   // BYPASS => FOR THE LINE INPUT
+                 (0<<INSEL)|    // SELECT THE INPUT TO THE ADC
+                 (0<<MUTEMIC)|  // MUTE THE MIC INPUT
+                 (0<<MICBOOST); // BOOST FOR THE MIC INPUT
+
+    digital_p =  (0<<HPOR)|   // STORE DC VALUE WHEN ADCHPH IS ACTIVE
+ 32c:	86 e0       	ldi	r24, 0x06	; 6
+ 32e:	8c 83       	std	Y+4, r24	; 0x04
+                 (1<<DEEMP1)|
+                 (1<<DEEMP0)|
+                 (0<<ADCHPD); // ACTIVATE THE OUTPUT FILTER
+
+    // BE CAREFULE FOR THE POWER !!! 0 = ON | 1 = OFF
+    power =      (0<<POWEROFF)| // FOR THE WHOLE CODEC
+ 330:	1b 82       	std	Y+3, r1	; 0x03
+                 (0<<DACPD)|    // FOR THE DAC
+                 (0<<ADCPD)|    // FOR THE ADC
+                 (0<<MICPD)|    // FOR THE MIC INPUT
+                 (0<<LINEINPD); // FOR THE LINE INPUT
+
+    digital_if = (0<<BCLKINV)| // INVERT BCLK
+ 332:	81 e0       	ldi	r24, 0x01	; 1
+ 334:	8a 83       	std	Y+2, r24	; 0x02
+                 (0<<IWL1)|    // BITS SAMPLING
+                 (0<<IWL0)|    // BITS SAMPLING
+                 (0<<FORMAT1)| // COMMUNICATION TYPE
+                 (1<<FORMAT0); // COMMUNICATION TYPE
+
+    sampling =   (0<<CLKODIV2)| // DIVIDE CLOCK OUT Acc2 CLOCK CORE
+ 336:	82 e0       	ldi	r24, 0x02	; 2
+ 338:	89 83       	std	Y+1, r24	; 0x01
+                 (0<<USB_NORM); // NORMAL OR USB MODE
+
+    // dsp =        (0<<ACTIVE); // ACTIVE OR NOT THE DSP PART
+
+    /** COMMUNICATION **/
+    I2C_init();
+ 33a:	0e 94 49 06 	call	0xc92	; 0xc92 <I2C_init>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,0);
+ 33e:	89 e0       	ldi	r24, 0x09	; 9
+ 340:	60 e0       	ldi	r22, 0x00	; 0
+ 342:	70 e0       	ldi	r23, 0x00	; 0
+ 344:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LLINE_IN,lrline);
+ 348:	28 85       	ldd	r18, Y+8	; 0x08
+ 34a:	39 85       	ldd	r19, Y+9	; 0x09
+ 34c:	80 e0       	ldi	r24, 0x00	; 0
+ 34e:	b9 01       	movw	r22, r18
+ 350:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RLINE_IN,lrline);
+ 354:	28 85       	ldd	r18, Y+8	; 0x08
+ 356:	39 85       	ldd	r19, Y+9	; 0x09
+ 358:	81 e0       	ldi	r24, 0x01	; 1
+ 35a:	b9 01       	movw	r22, r18
+ 35c:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LHPHONE_OUT,lrhpout);
+ 360:	2e 81       	ldd	r18, Y+6	; 0x06
+ 362:	3f 81       	ldd	r19, Y+7	; 0x07
+ 364:	82 e0       	ldi	r24, 0x02	; 2
+ 366:	b9 01       	movw	r22, r18
+ 368:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RHPHONE_OUT,lrhpout);
+ 36c:	2e 81       	ldd	r18, Y+6	; 0x06
+ 36e:	3f 81       	ldd	r19, Y+7	; 0x07
+ 370:	83 e0       	ldi	r24, 0x03	; 3
+ 372:	b9 01       	movw	r22, r18
+ 374:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ANALOG_PATH,analog_p);
+ 378:	8d 81       	ldd	r24, Y+5	; 0x05
+ 37a:	28 2f       	mov	r18, r24
+ 37c:	30 e0       	ldi	r19, 0x00	; 0
+ 37e:	84 e0       	ldi	r24, 0x04	; 4
+ 380:	b9 01       	movw	r22, r18
+ 382:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_PATH,digital_p);
+ 386:	8c 81       	ldd	r24, Y+4	; 0x04
+ 388:	28 2f       	mov	r18, r24
+ 38a:	30 e0       	ldi	r19, 0x00	; 0
+ 38c:	85 e0       	ldi	r24, 0x05	; 5
+ 38e:	b9 01       	movw	r22, r18
+ 390:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_PDOWN_CTRL,power);
+ 394:	8b 81       	ldd	r24, Y+3	; 0x03
+ 396:	28 2f       	mov	r18, r24
+ 398:	30 e0       	ldi	r19, 0x00	; 0
+ 39a:	86 e0       	ldi	r24, 0x06	; 6
+ 39c:	b9 01       	movw	r22, r18
+ 39e:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_IF,digital_if);
+ 3a2:	8a 81       	ldd	r24, Y+2	; 0x02
+ 3a4:	28 2f       	mov	r18, r24
+ 3a6:	30 e0       	ldi	r19, 0x00	; 0
+ 3a8:	87 e0       	ldi	r24, 0x07	; 7
+ 3aa:	b9 01       	movw	r22, r18
+ 3ac:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_SAMPLING_CTRL,sampling);
+ 3b0:	89 81       	ldd	r24, Y+1	; 0x01
+ 3b2:	28 2f       	mov	r18, r24
+ 3b4:	30 e0       	ldi	r19, 0x00	; 0
+ 3b6:	88 e0       	ldi	r24, 0x08	; 8
+ 3b8:	b9 01       	movw	r22, r18
+ 3ba:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,1);
+ 3be:	89 e0       	ldi	r24, 0x09	; 9
+ 3c0:	61 e0       	ldi	r22, 0x01	; 1
+ 3c2:	70 e0       	ldi	r23, 0x00	; 0
+ 3c4:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+
+
+}
+ 3c8:	29 96       	adiw	r28, 0x09	; 9
+ 3ca:	0f b6       	in	r0, 0x3f	; 63
+ 3cc:	f8 94       	cli
+ 3ce:	de bf       	out	0x3e, r29	; 62
+ 3d0:	0f be       	out	0x3f, r0	; 63
+ 3d2:	cd bf       	out	0x3d, r28	; 61
+ 3d4:	cf 91       	pop	r28
+ 3d6:	df 91       	pop	r29
+ 3d8:	08 95       	ret
+
+000003da <codec_bypass>:
+***********************************************************/
+/**********************************************************
+* STATE: IT WORKS WELL!
+***********************************************************/
+void codec_bypass()
+{
+ 3da:	df 93       	push	r29
+ 3dc:	cf 93       	push	r28
+ 3de:	cd b7       	in	r28, 0x3d	; 61
+ 3e0:	de b7       	in	r29, 0x3e	; 62
+ 3e2:	27 97       	sbiw	r28, 0x07	; 7
+ 3e4:	0f b6       	in	r0, 0x3f	; 63
+ 3e6:	f8 94       	cli
+ 3e8:	de bf       	out	0x3e, r29	; 62
+ 3ea:	0f be       	out	0x3f, r0	; 63
+ 3ec:	cd bf       	out	0x3d, r28	; 61
+    unsigned int LRlinein       = 0b010010111;       // line in left & right
+ 3ee:	87 e9       	ldi	r24, 0x97	; 151
+ 3f0:	90 e0       	ldi	r25, 0x00	; 0
+ 3f2:	9f 83       	std	Y+7, r25	; 0x07
+ 3f4:	8e 83       	std	Y+6, r24	; 0x06
+    // this command is useless ; LINEIN inputs are not used !
+    // just set the MICIN input with the analog register
+    unsigned int LRhpout        = 0b011111111;       // hp left & right
+ 3f6:	8f ef       	ldi	r24, 0xFF	; 255
+ 3f8:	90 e0       	ldi	r25, 0x00	; 0
+ 3fa:	9d 83       	std	Y+5, r25	; 0x05
+ 3fc:	8c 83       	std	Y+4, r24	; 0x04
+    unsigned char analogue      = 0b00100010;        // analogue path
+ 3fe:	82 e2       	ldi	r24, 0x22	; 34
+ 400:	8b 83       	std	Y+3, r24	; 0x03
+    unsigned char digital       = 0b00000001;        // digital path
+ 402:	81 e0       	ldi	r24, 0x01	; 1
+ 404:	8a 83       	std	Y+2, r24	; 0x02
+    unsigned char power         = 0b01101100;        // disable power down
+ 406:	8c e6       	ldi	r24, 0x6C	; 108
+ 408:	89 83       	std	Y+1, r24	; 0x01
+
+    I2C_init();
+ 40a:	0e 94 49 06 	call	0xc92	; 0xc92 <I2C_init>
+    codec_CMD(WM8731_REG_LLINE_IN,LRlinein); // useless
+ 40e:	2e 81       	ldd	r18, Y+6	; 0x06
+ 410:	3f 81       	ldd	r19, Y+7	; 0x07
+ 412:	80 e0       	ldi	r24, 0x00	; 0
+ 414:	b9 01       	movw	r22, r18
+ 416:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RLINE_IN,LRlinein); // useless
+ 41a:	2e 81       	ldd	r18, Y+6	; 0x06
+ 41c:	3f 81       	ldd	r19, Y+7	; 0x07
+ 41e:	81 e0       	ldi	r24, 0x01	; 1
+ 420:	b9 01       	movw	r22, r18
+ 422:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LHPHONE_OUT,LRhpout);
+ 426:	2c 81       	ldd	r18, Y+4	; 0x04
+ 428:	3d 81       	ldd	r19, Y+5	; 0x05
+ 42a:	82 e0       	ldi	r24, 0x02	; 2
+ 42c:	b9 01       	movw	r22, r18
+ 42e:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RHPHONE_OUT,LRhpout);
+ 432:	2c 81       	ldd	r18, Y+4	; 0x04
+ 434:	3d 81       	ldd	r19, Y+5	; 0x05
+ 436:	83 e0       	ldi	r24, 0x03	; 3
+ 438:	b9 01       	movw	r22, r18
+ 43a:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    // the 2 outputs are set with +6dB (due to the -6dB in "SIDETONE")
+    codec_CMD(WM8731_REG_ANALOG_PATH,analogue); // set the MICIN input
+ 43e:	8b 81       	ldd	r24, Y+3	; 0x03
+ 440:	28 2f       	mov	r18, r24
+ 442:	30 e0       	ldi	r19, 0x00	; 0
+ 444:	84 e0       	ldi	r24, 0x04	; 4
+ 446:	b9 01       	movw	r22, r18
+ 448:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_PATH,digital);
+ 44c:	8a 81       	ldd	r24, Y+2	; 0x02
+ 44e:	28 2f       	mov	r18, r24
+ 450:	30 e0       	ldi	r19, 0x00	; 0
+ 452:	85 e0       	ldi	r24, 0x05	; 5
+ 454:	b9 01       	movw	r22, r18
+ 456:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_PDOWN_CTRL,power); // disable power down, MICIN and OUTPD
+ 45a:	89 81       	ldd	r24, Y+1	; 0x01
+ 45c:	28 2f       	mov	r18, r24
+ 45e:	30 e0       	ldi	r19, 0x00	; 0
+ 460:	86 e0       	ldi	r24, 0x06	; 6
+ 462:	b9 01       	movw	r22, r18
+ 464:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_IF,WM8731_reg_digital_if);
+ 468:	87 e0       	ldi	r24, 0x07	; 7
+ 46a:	6a e0       	ldi	r22, 0x0A	; 10
+ 46c:	70 e0       	ldi	r23, 0x00	; 0
+ 46e:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_SAMPLING_CTRL,WM8731_reg_sampling_ctrl);
+ 472:	88 e0       	ldi	r24, 0x08	; 8
+ 474:	60 e0       	ldi	r22, 0x00	; 0
+ 476:	70 e0       	ldi	r23, 0x00	; 0
+ 478:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,0);
+ 47c:	89 e0       	ldi	r24, 0x09	; 9
+ 47e:	60 e0       	ldi	r22, 0x00	; 0
+ 480:	70 e0       	ldi	r23, 0x00	; 0
+ 482:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+
+}
+ 486:	27 96       	adiw	r28, 0x07	; 7
+ 488:	0f b6       	in	r0, 0x3f	; 63
+ 48a:	f8 94       	cli
+ 48c:	de bf       	out	0x3e, r29	; 62
+ 48e:	0f be       	out	0x3f, r0	; 63
+ 490:	cd bf       	out	0x3d, r28	; 61
+ 492:	cf 91       	pop	r28
+ 494:	df 91       	pop	r29
+ 496:	08 95       	ret
+
+00000498 <codec_linein_bypass>:
+***********************************************************/
+/**********************************************************
+* STATE: TESTING
+***********************************************************/
+void codec_linein_bypass()
+{
+ 498:	df 93       	push	r29
+ 49a:	cf 93       	push	r28
+ 49c:	cd b7       	in	r28, 0x3d	; 61
+ 49e:	de b7       	in	r29, 0x3e	; 62
+ 4a0:	27 97       	sbiw	r28, 0x07	; 7
+ 4a2:	0f b6       	in	r0, 0x3f	; 63
+ 4a4:	f8 94       	cli
+ 4a6:	de bf       	out	0x3e, r29	; 62
+ 4a8:	0f be       	out	0x3f, r0	; 63
+ 4aa:	cd bf       	out	0x3d, r28	; 61
+    unsigned int LRlinein       = 0b010010111;       // line in left & right
+ 4ac:	87 e9       	ldi	r24, 0x97	; 151
+ 4ae:	90 e0       	ldi	r25, 0x00	; 0
+ 4b0:	9f 83       	std	Y+7, r25	; 0x07
+ 4b2:	8e 83       	std	Y+6, r24	; 0x06
+
+    unsigned int LRhpout        = 0b011111001;       // hp left & right
+ 4b4:	89 ef       	ldi	r24, 0xF9	; 249
+ 4b6:	90 e0       	ldi	r25, 0x00	; 0
+ 4b8:	9d 83       	std	Y+5, r25	; 0x05
+ 4ba:	8c 83       	std	Y+4, r24	; 0x04
+    unsigned char analogue      = 0b00001000;        // analogue path
+ 4bc:	88 e0       	ldi	r24, 0x08	; 8
+ 4be:	8b 83       	std	Y+3, r24	; 0x03
+    // sidetone set off
+    // bypass set on
+    // mic input set off
+    unsigned char digital       = 0b00000001;        // digital path
+ 4c0:	81 e0       	ldi	r24, 0x01	; 1
+ 4c2:	8a 83       	std	Y+2, r24	; 0x02
+    unsigned char power         = 0b01101110;        // disable power down
+ 4c4:	8e e6       	ldi	r24, 0x6E	; 110
+ 4c6:	89 83       	std	Y+1, r24	; 0x01
+    // mic input power set off
+
+    I2C_init();
+ 4c8:	0e 94 49 06 	call	0xc92	; 0xc92 <I2C_init>
+    codec_CMD(WM8731_REG_LLINE_IN,LRlinein); // useless
+ 4cc:	2e 81       	ldd	r18, Y+6	; 0x06
+ 4ce:	3f 81       	ldd	r19, Y+7	; 0x07
+ 4d0:	80 e0       	ldi	r24, 0x00	; 0
+ 4d2:	b9 01       	movw	r22, r18
+ 4d4:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RLINE_IN,LRlinein); // useless
+ 4d8:	2e 81       	ldd	r18, Y+6	; 0x06
+ 4da:	3f 81       	ldd	r19, Y+7	; 0x07
+ 4dc:	81 e0       	ldi	r24, 0x01	; 1
+ 4de:	b9 01       	movw	r22, r18
+ 4e0:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LHPHONE_OUT,LRhpout);
+ 4e4:	2c 81       	ldd	r18, Y+4	; 0x04
+ 4e6:	3d 81       	ldd	r19, Y+5	; 0x05
+ 4e8:	82 e0       	ldi	r24, 0x02	; 2
+ 4ea:	b9 01       	movw	r22, r18
+ 4ec:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RHPHONE_OUT,LRhpout);
+ 4f0:	2c 81       	ldd	r18, Y+4	; 0x04
+ 4f2:	3d 81       	ldd	r19, Y+5	; 0x05
+ 4f4:	83 e0       	ldi	r24, 0x03	; 3
+ 4f6:	b9 01       	movw	r22, r18
+ 4f8:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    // the 2 outputs are set with +6dB (due to the -6dB in "SIDETONE")
+    codec_CMD(WM8731_REG_ANALOG_PATH,analogue); // set the MICIN input
+ 4fc:	8b 81       	ldd	r24, Y+3	; 0x03
+ 4fe:	28 2f       	mov	r18, r24
+ 500:	30 e0       	ldi	r19, 0x00	; 0
+ 502:	84 e0       	ldi	r24, 0x04	; 4
+ 504:	b9 01       	movw	r22, r18
+ 506:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_PATH,digital);
+ 50a:	8a 81       	ldd	r24, Y+2	; 0x02
+ 50c:	28 2f       	mov	r18, r24
+ 50e:	30 e0       	ldi	r19, 0x00	; 0
+ 510:	85 e0       	ldi	r24, 0x05	; 5
+ 512:	b9 01       	movw	r22, r18
+ 514:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_PDOWN_CTRL,power); // disable power down, MICIN and OUTPD
+ 518:	89 81       	ldd	r24, Y+1	; 0x01
+ 51a:	28 2f       	mov	r18, r24
+ 51c:	30 e0       	ldi	r19, 0x00	; 0
+ 51e:	86 e0       	ldi	r24, 0x06	; 6
+ 520:	b9 01       	movw	r22, r18
+ 522:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_IF,WM8731_reg_digital_if);
+ 526:	87 e0       	ldi	r24, 0x07	; 7
+ 528:	6a e0       	ldi	r22, 0x0A	; 10
+ 52a:	70 e0       	ldi	r23, 0x00	; 0
+ 52c:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_SAMPLING_CTRL,WM8731_reg_sampling_ctrl);
+ 530:	88 e0       	ldi	r24, 0x08	; 8
+ 532:	60 e0       	ldi	r22, 0x00	; 0
+ 534:	70 e0       	ldi	r23, 0x00	; 0
+ 536:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,0);
+ 53a:	89 e0       	ldi	r24, 0x09	; 9
+ 53c:	60 e0       	ldi	r22, 0x00	; 0
+ 53e:	70 e0       	ldi	r23, 0x00	; 0
+ 540:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+
+}
+ 544:	27 96       	adiw	r28, 0x07	; 7
+ 546:	0f b6       	in	r0, 0x3f	; 63
+ 548:	f8 94       	cli
+ 54a:	de bf       	out	0x3e, r29	; 62
+ 54c:	0f be       	out	0x3f, r0	; 63
+ 54e:	cd bf       	out	0x3d, r28	; 61
+ 550:	cf 91       	pop	r28
+ 552:	df 91       	pop	r29
+ 554:	08 95       	ret
+
+00000556 <codec_test2>:
+***********************************************************/
+/**********************************************************
+* STATE: TESTING
+***********************************************************/
+void codec_test2()
+{
+ 556:	df 93       	push	r29
+ 558:	cf 93       	push	r28
+ 55a:	cd b7       	in	r28, 0x3d	; 61
+ 55c:	de b7       	in	r29, 0x3e	; 62
+ 55e:	2b 97       	sbiw	r28, 0x0b	; 11
+ 560:	0f b6       	in	r0, 0x3f	; 63
+ 562:	f8 94       	cli
+ 564:	de bf       	out	0x3e, r29	; 62
+ 566:	0f be       	out	0x3f, r0	; 63
+ 568:	cd bf       	out	0x3d, r28	; 61
+    unsigned int Llinein        = 0b010010111;       // line in left
+ 56a:	87 e9       	ldi	r24, 0x97	; 151
+ 56c:	90 e0       	ldi	r25, 0x00	; 0
+ 56e:	9b 87       	std	Y+11, r25	; 0x0b
+ 570:	8a 87       	std	Y+10, r24	; 0x0a
+    unsigned int Rlinein        = 0b010010111;       // line in right
+ 572:	87 e9       	ldi	r24, 0x97	; 151
+ 574:	90 e0       	ldi	r25, 0x00	; 0
+ 576:	99 87       	std	Y+9, r25	; 0x09
+ 578:	88 87       	std	Y+8, r24	; 0x08
+    /******************************************
+    * these registers are useless
+    ******************************************/
+
+    unsigned int Lhpout         = 0b011110000;       // hp left
+ 57a:	80 ef       	ldi	r24, 0xF0	; 240
+ 57c:	90 e0       	ldi	r25, 0x00	; 0
+ 57e:	9f 83       	std	Y+7, r25	; 0x07
+ 580:	8e 83       	std	Y+6, r24	; 0x06
+    unsigned int Rhpout         = 0b011110000;       // hp right
+ 582:	80 ef       	ldi	r24, 0xF0	; 240
+ 584:	90 e0       	ldi	r25, 0x00	; 0
+ 586:	9d 83       	std	Y+5, r25	; 0x05
+ 588:	8c 83       	std	Y+4, r24	; 0x04
+    unsigned char analogue      = 0b00100010;        // anal path
+ 58a:	82 e2       	ldi	r24, 0x22	; 34
+ 58c:	8b 83       	std	Y+3, r24	; 0x03
+    unsigned char digital       = 0b00000001;        // digital path
+ 58e:	81 e0       	ldi	r24, 0x01	; 1
+ 590:	8a 83       	std	Y+2, r24	; 0x02
+    unsigned char power         = 0b01101100;        // disable power down
+ 592:	8c e6       	ldi	r24, 0x6C	; 108
+ 594:	89 83       	std	Y+1, r24	; 0x01
+
+    I2C_init();
+ 596:	0e 94 49 06 	call	0xc92	; 0xc92 <I2C_init>
+    codec_CMD(WM8731_REG_LLINE_IN,Llinein);
+ 59a:	2a 85       	ldd	r18, Y+10	; 0x0a
+ 59c:	3b 85       	ldd	r19, Y+11	; 0x0b
+ 59e:	80 e0       	ldi	r24, 0x00	; 0
+ 5a0:	b9 01       	movw	r22, r18
+ 5a2:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RLINE_IN,Rlinein);
+ 5a6:	28 85       	ldd	r18, Y+8	; 0x08
+ 5a8:	39 85       	ldd	r19, Y+9	; 0x09
+ 5aa:	81 e0       	ldi	r24, 0x01	; 1
+ 5ac:	b9 01       	movw	r22, r18
+ 5ae:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LHPHONE_OUT,Lhpout);
+ 5b2:	2e 81       	ldd	r18, Y+6	; 0x06
+ 5b4:	3f 81       	ldd	r19, Y+7	; 0x07
+ 5b6:	82 e0       	ldi	r24, 0x02	; 2
+ 5b8:	b9 01       	movw	r22, r18
+ 5ba:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RHPHONE_OUT,Rhpout);
+ 5be:	2c 81       	ldd	r18, Y+4	; 0x04
+ 5c0:	3d 81       	ldd	r19, Y+5	; 0x05
+ 5c2:	83 e0       	ldi	r24, 0x03	; 3
+ 5c4:	b9 01       	movw	r22, r18
+ 5c6:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ANALOG_PATH,analogue);
+ 5ca:	8b 81       	ldd	r24, Y+3	; 0x03
+ 5cc:	28 2f       	mov	r18, r24
+ 5ce:	30 e0       	ldi	r19, 0x00	; 0
+ 5d0:	84 e0       	ldi	r24, 0x04	; 4
+ 5d2:	b9 01       	movw	r22, r18
+ 5d4:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_PATH,digital);
+ 5d8:	8a 81       	ldd	r24, Y+2	; 0x02
+ 5da:	28 2f       	mov	r18, r24
+ 5dc:	30 e0       	ldi	r19, 0x00	; 0
+ 5de:	85 e0       	ldi	r24, 0x05	; 5
+ 5e0:	b9 01       	movw	r22, r18
+ 5e2:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_PDOWN_CTRL,power);
+ 5e6:	89 81       	ldd	r24, Y+1	; 0x01
+ 5e8:	28 2f       	mov	r18, r24
+ 5ea:	30 e0       	ldi	r19, 0x00	; 0
+ 5ec:	86 e0       	ldi	r24, 0x06	; 6
+ 5ee:	b9 01       	movw	r22, r18
+ 5f0:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_IF,WM8731_reg_digital_if);
+ 5f4:	87 e0       	ldi	r24, 0x07	; 7
+ 5f6:	6a e0       	ldi	r22, 0x0A	; 10
+ 5f8:	70 e0       	ldi	r23, 0x00	; 0
+ 5fa:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_SAMPLING_CTRL,WM8731_reg_sampling_ctrl);
+ 5fe:	88 e0       	ldi	r24, 0x08	; 8
+ 600:	60 e0       	ldi	r22, 0x00	; 0
+ 602:	70 e0       	ldi	r23, 0x00	; 0
+ 604:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+
+}
+ 608:	2b 96       	adiw	r28, 0x0b	; 11
+ 60a:	0f b6       	in	r0, 0x3f	; 63
+ 60c:	f8 94       	cli
+ 60e:	de bf       	out	0x3e, r29	; 62
+ 610:	0f be       	out	0x3f, r0	; 63
+ 612:	cd bf       	out	0x3d, r28	; 61
+ 614:	cf 91       	pop	r28
+ 616:	df 91       	pop	r29
+ 618:	08 95       	ret
+
+0000061a <codec_ADCDAC>:
+***********************************************************/
+/**********************************************************
+* STATE: TESTING
+***********************************************************/
+void codec_ADCDAC()
+{
+ 61a:	df 93       	push	r29
+ 61c:	cf 93       	push	r28
+ 61e:	cd b7       	in	r28, 0x3d	; 61
+ 620:	de b7       	in	r29, 0x3e	; 62
+ 622:	27 97       	sbiw	r28, 0x07	; 7
+ 624:	0f b6       	in	r0, 0x3f	; 63
+ 626:	f8 94       	cli
+ 628:	de bf       	out	0x3e, r29	; 62
+ 62a:	0f be       	out	0x3f, r0	; 63
+ 62c:	cd bf       	out	0x3d, r28	; 61
+
+    unsigned int RLhpout        = 0b011111001;
+ 62e:	89 ef       	ldi	r24, 0xF9	; 249
+ 630:	90 e0       	ldi	r25, 0x00	; 0
+ 632:	9f 83       	std	Y+7, r25	; 0x07
+ 634:	8e 83       	std	Y+6, r24	; 0x06
+    unsigned char analog        = 0b00010100;
+ 636:	84 e1       	ldi	r24, 0x14	; 20
+ 638:	8d 83       	std	Y+5, r24	; 0x05
+    unsigned char digital       = 0b00000001;
+ 63a:	81 e0       	ldi	r24, 0x01	; 1
+ 63c:	8c 83       	std	Y+4, r24	; 0x04
+    unsigned char power         = 0b01000001;
+ 63e:	81 e4       	ldi	r24, 0x41	; 65
+ 640:	8b 83       	std	Y+3, r24	; 0x03
+    unsigned char digital_if1   = 0b01011010;
+ 642:	8a e5       	ldi	r24, 0x5A	; 90
+ 644:	8a 83       	std	Y+2, r24	; 0x02
+    // unsigned char digital_if2   = 0b01000000;
+    // unsigned char sampling8       = 0b00001100;
+    unsigned char sampling48      = 0b00000000;
+ 646:	19 82       	std	Y+1, r1	; 0x01
+    // unsigned char sampling96      = 0b00011100;
+
+    // many variables to test the output with different configurations
+
+
+    I2C_init();
+ 648:	0e 94 49 06 	call	0xc92	; 0xc92 <I2C_init>
+    codec_CMD(WM8731_REG_LHPHONE_OUT,RLhpout);
+ 64c:	2e 81       	ldd	r18, Y+6	; 0x06
+ 64e:	3f 81       	ldd	r19, Y+7	; 0x07
+ 650:	82 e0       	ldi	r24, 0x02	; 2
+ 652:	b9 01       	movw	r22, r18
+ 654:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RHPHONE_OUT,RLhpout);
+ 658:	2e 81       	ldd	r18, Y+6	; 0x06
+ 65a:	3f 81       	ldd	r19, Y+7	; 0x07
+ 65c:	83 e0       	ldi	r24, 0x03	; 3
+ 65e:	b9 01       	movw	r22, r18
+ 660:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ANALOG_PATH,analog);
+ 664:	8d 81       	ldd	r24, Y+5	; 0x05
+ 666:	28 2f       	mov	r18, r24
+ 668:	30 e0       	ldi	r19, 0x00	; 0
+ 66a:	84 e0       	ldi	r24, 0x04	; 4
+ 66c:	b9 01       	movw	r22, r18
+ 66e:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_PATH,digital);
+ 672:	8c 81       	ldd	r24, Y+4	; 0x04
+ 674:	28 2f       	mov	r18, r24
+ 676:	30 e0       	ldi	r19, 0x00	; 0
+ 678:	85 e0       	ldi	r24, 0x05	; 5
+ 67a:	b9 01       	movw	r22, r18
+ 67c:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_PDOWN_CTRL,power);
+ 680:	8b 81       	ldd	r24, Y+3	; 0x03
+ 682:	28 2f       	mov	r18, r24
+ 684:	30 e0       	ldi	r19, 0x00	; 0
+ 686:	86 e0       	ldi	r24, 0x06	; 6
+ 688:	b9 01       	movw	r22, r18
+ 68a:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_IF,digital_if1);
+ 68e:	8a 81       	ldd	r24, Y+2	; 0x02
+ 690:	28 2f       	mov	r18, r24
+ 692:	30 e0       	ldi	r19, 0x00	; 0
+ 694:	87 e0       	ldi	r24, 0x07	; 7
+ 696:	b9 01       	movw	r22, r18
+ 698:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_SAMPLING_CTRL,sampling48);
+ 69c:	89 81       	ldd	r24, Y+1	; 0x01
+ 69e:	28 2f       	mov	r18, r24
+ 6a0:	30 e0       	ldi	r19, 0x00	; 0
+ 6a2:	88 e0       	ldi	r24, 0x08	; 8
+ 6a4:	b9 01       	movw	r22, r18
+ 6a6:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,ACTIVE); // active the DSP part even if it doesn't exist !
+ 6aa:	89 e0       	ldi	r24, 0x09	; 9
+ 6ac:	61 e0       	ldi	r22, 0x01	; 1
+ 6ae:	70 e0       	ldi	r23, 0x00	; 0
+ 6b0:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+
+
+
+}
+ 6b4:	27 96       	adiw	r28, 0x07	; 7
+ 6b6:	0f b6       	in	r0, 0x3f	; 63
+ 6b8:	f8 94       	cli
+ 6ba:	de bf       	out	0x3e, r29	; 62
+ 6bc:	0f be       	out	0x3f, r0	; 63
+ 6be:	cd bf       	out	0x3d, r28	; 61
+ 6c0:	cf 91       	pop	r28
+ 6c2:	df 91       	pop	r29
+ 6c4:	08 95       	ret
+
+000006c6 <codec_default>:
+* NAME: codec_default()
+* DESCRIPTION: set all default option
+* RETURN: none
+***********************************************************/
+void codec_default()
+{
+ 6c6:	df 93       	push	r29
+ 6c8:	cf 93       	push	r28
+ 6ca:	cd b7       	in	r28, 0x3d	; 61
+ 6cc:	de b7       	in	r29, 0x3e	; 62
+    I2C_init();
+ 6ce:	0e 94 49 06 	call	0xc92	; 0xc92 <I2C_init>
+    codec_CMD(WM8731_REG_RESET,WM8731_reg_reset);
+ 6d2:	8f e0       	ldi	r24, 0x0F	; 15
+ 6d4:	60 e0       	ldi	r22, 0x00	; 0
+ 6d6:	70 e0       	ldi	r23, 0x00	; 0
+ 6d8:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LLINE_IN,WM8731_reg_lline_in);
+ 6dc:	80 e0       	ldi	r24, 0x00	; 0
+ 6de:	67 e9       	ldi	r22, 0x97	; 151
+ 6e0:	70 e0       	ldi	r23, 0x00	; 0
+ 6e2:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RLINE_IN,WM8731_reg_rline_in);
+ 6e6:	81 e0       	ldi	r24, 0x01	; 1
+ 6e8:	67 e9       	ldi	r22, 0x97	; 151
+ 6ea:	70 e0       	ldi	r23, 0x00	; 0
+ 6ec:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_LHPHONE_OUT,WM8731_reg_lhphone_out);
+ 6f0:	82 e0       	ldi	r24, 0x02	; 2
+ 6f2:	69 e7       	ldi	r22, 0x79	; 121
+ 6f4:	70 e0       	ldi	r23, 0x00	; 0
+ 6f6:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_RHPHONE_OUT,WM8731_reg_rhphone_out);
+ 6fa:	83 e0       	ldi	r24, 0x03	; 3
+ 6fc:	69 e7       	ldi	r22, 0x79	; 121
+ 6fe:	70 e0       	ldi	r23, 0x00	; 0
+ 700:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ANALOG_PATH,WM8731_reg_analog_path);
+ 704:	84 e0       	ldi	r24, 0x04	; 4
+ 706:	6a e0       	ldi	r22, 0x0A	; 10
+ 708:	70 e0       	ldi	r23, 0x00	; 0
+ 70a:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_PATH,WM8731_reg_digital_path);
+ 70e:	85 e0       	ldi	r24, 0x05	; 5
+ 710:	68 e0       	ldi	r22, 0x08	; 8
+ 712:	70 e0       	ldi	r23, 0x00	; 0
+ 714:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_PDOWN_CTRL,WM8731_reg_pdown_ctrl);
+ 718:	86 e0       	ldi	r24, 0x06	; 6
+ 71a:	6f e9       	ldi	r22, 0x9F	; 159
+ 71c:	70 e0       	ldi	r23, 0x00	; 0
+ 71e:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_DIGITAL_IF,WM8731_reg_digital_if);
+ 722:	87 e0       	ldi	r24, 0x07	; 7
+ 724:	6a e0       	ldi	r22, 0x0A	; 10
+ 726:	70 e0       	ldi	r23, 0x00	; 0
+ 728:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_SAMPLING_CTRL,WM8731_reg_sampling_ctrl);
+ 72c:	88 e0       	ldi	r24, 0x08	; 8
+ 72e:	60 e0       	ldi	r22, 0x00	; 0
+ 730:	70 e0       	ldi	r23, 0x00	; 0
+ 732:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+    codec_CMD(WM8731_REG_ACTIVE_CTRL,WM8731_reg_active_ctrl);
+ 736:	89 e0       	ldi	r24, 0x09	; 9
+ 738:	60 e0       	ldi	r22, 0x00	; 0
+ 73a:	70 e0       	ldi	r23, 0x00	; 0
+ 73c:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <codec_CMD>
+
+}
+ 740:	cf 91       	pop	r28
+ 742:	df 91       	pop	r29
+ 744:	08 95       	ret
+
+00000746 <set_format_DSP>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_format_DSP(unsigned char *digital_if)
+{
+ 746:	df 93       	push	r29
+ 748:	cf 93       	push	r28
+ 74a:	00 d0       	rcall	.+0      	; 0x74c <set_format_DSP+0x6>
+ 74c:	cd b7       	in	r28, 0x3d	; 61
+ 74e:	de b7       	in	r29, 0x3e	; 62
+ 750:	9a 83       	std	Y+2, r25	; 0x02
+ 752:	89 83       	std	Y+1, r24	; 0x01
+    sbiBF(*digital_if,FORMAT1);
+ 754:	e9 81       	ldd	r30, Y+1	; 0x01
+ 756:	fa 81       	ldd	r31, Y+2	; 0x02
+ 758:	80 81       	ld	r24, Z
+ 75a:	82 60       	ori	r24, 0x02	; 2
+ 75c:	e9 81       	ldd	r30, Y+1	; 0x01
+ 75e:	fa 81       	ldd	r31, Y+2	; 0x02
+ 760:	80 83       	st	Z, r24
+    sbiBF(*digital_if,FORMAT0);
+ 762:	e9 81       	ldd	r30, Y+1	; 0x01
+ 764:	fa 81       	ldd	r31, Y+2	; 0x02
+ 766:	80 81       	ld	r24, Z
+ 768:	81 60       	ori	r24, 0x01	; 1
+ 76a:	e9 81       	ldd	r30, Y+1	; 0x01
+ 76c:	fa 81       	ldd	r31, Y+2	; 0x02
+ 76e:	80 83       	st	Z, r24
+}
+ 770:	0f 90       	pop	r0
+ 772:	0f 90       	pop	r0
+ 774:	cf 91       	pop	r28
+ 776:	df 91       	pop	r29
+ 778:	08 95       	ret
+
+0000077a <set_format_I2S>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_format_I2S(unsigned char *digital_if)
+{
+ 77a:	df 93       	push	r29
+ 77c:	cf 93       	push	r28
+ 77e:	00 d0       	rcall	.+0      	; 0x780 <set_format_I2S+0x6>
+ 780:	cd b7       	in	r28, 0x3d	; 61
+ 782:	de b7       	in	r29, 0x3e	; 62
+ 784:	9a 83       	std	Y+2, r25	; 0x02
+ 786:	89 83       	std	Y+1, r24	; 0x01
+    sbiBF(*digital_if,FORMAT1);
+ 788:	e9 81       	ldd	r30, Y+1	; 0x01
+ 78a:	fa 81       	ldd	r31, Y+2	; 0x02
+ 78c:	80 81       	ld	r24, Z
+ 78e:	82 60       	ori	r24, 0x02	; 2
+ 790:	e9 81       	ldd	r30, Y+1	; 0x01
+ 792:	fa 81       	ldd	r31, Y+2	; 0x02
+ 794:	80 83       	st	Z, r24
+    cbiBF(*digital_if,FORMAT0);
+ 796:	e9 81       	ldd	r30, Y+1	; 0x01
+ 798:	fa 81       	ldd	r31, Y+2	; 0x02
+ 79a:	80 81       	ld	r24, Z
+ 79c:	8e 7f       	andi	r24, 0xFE	; 254
+ 79e:	e9 81       	ldd	r30, Y+1	; 0x01
+ 7a0:	fa 81       	ldd	r31, Y+2	; 0x02
+ 7a2:	80 83       	st	Z, r24
+}
+ 7a4:	0f 90       	pop	r0
+ 7a6:	0f 90       	pop	r0
+ 7a8:	cf 91       	pop	r28
+ 7aa:	df 91       	pop	r29
+ 7ac:	08 95       	ret
+
+000007ae <set_format_MSBLJ>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_format_MSBLJ(unsigned char *digital_if)
+{
+ 7ae:	df 93       	push	r29
+ 7b0:	cf 93       	push	r28
+ 7b2:	00 d0       	rcall	.+0      	; 0x7b4 <set_format_MSBLJ+0x6>
+ 7b4:	cd b7       	in	r28, 0x3d	; 61
+ 7b6:	de b7       	in	r29, 0x3e	; 62
+ 7b8:	9a 83       	std	Y+2, r25	; 0x02
+ 7ba:	89 83       	std	Y+1, r24	; 0x01
+    cbiBF(*digital_if,FORMAT1);
+ 7bc:	e9 81       	ldd	r30, Y+1	; 0x01
+ 7be:	fa 81       	ldd	r31, Y+2	; 0x02
+ 7c0:	80 81       	ld	r24, Z
+ 7c2:	8d 7f       	andi	r24, 0xFD	; 253
+ 7c4:	e9 81       	ldd	r30, Y+1	; 0x01
+ 7c6:	fa 81       	ldd	r31, Y+2	; 0x02
+ 7c8:	80 83       	st	Z, r24
+    sbiBF(*digital_if,FORMAT0);
+ 7ca:	e9 81       	ldd	r30, Y+1	; 0x01
+ 7cc:	fa 81       	ldd	r31, Y+2	; 0x02
+ 7ce:	80 81       	ld	r24, Z
+ 7d0:	81 60       	ori	r24, 0x01	; 1
+ 7d2:	e9 81       	ldd	r30, Y+1	; 0x01
+ 7d4:	fa 81       	ldd	r31, Y+2	; 0x02
+ 7d6:	80 83       	st	Z, r24
+}
+ 7d8:	0f 90       	pop	r0
+ 7da:	0f 90       	pop	r0
+ 7dc:	cf 91       	pop	r28
+ 7de:	df 91       	pop	r29
+ 7e0:	08 95       	ret
+
+000007e2 <set_format_MSBRJ>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_format_MSBRJ(unsigned char *digital_if)
+{
+ 7e2:	df 93       	push	r29
+ 7e4:	cf 93       	push	r28
+ 7e6:	00 d0       	rcall	.+0      	; 0x7e8 <set_format_MSBRJ+0x6>
+ 7e8:	cd b7       	in	r28, 0x3d	; 61
+ 7ea:	de b7       	in	r29, 0x3e	; 62
+ 7ec:	9a 83       	std	Y+2, r25	; 0x02
+ 7ee:	89 83       	std	Y+1, r24	; 0x01
+    cbiBF(*digital_if,FORMAT1);
+ 7f0:	e9 81       	ldd	r30, Y+1	; 0x01
+ 7f2:	fa 81       	ldd	r31, Y+2	; 0x02
+ 7f4:	80 81       	ld	r24, Z
+ 7f6:	8d 7f       	andi	r24, 0xFD	; 253
+ 7f8:	e9 81       	ldd	r30, Y+1	; 0x01
+ 7fa:	fa 81       	ldd	r31, Y+2	; 0x02
+ 7fc:	80 83       	st	Z, r24
+    cbiBF(*digital_if,FORMAT0);
+ 7fe:	e9 81       	ldd	r30, Y+1	; 0x01
+ 800:	fa 81       	ldd	r31, Y+2	; 0x02
+ 802:	80 81       	ld	r24, Z
+ 804:	8e 7f       	andi	r24, 0xFE	; 254
+ 806:	e9 81       	ldd	r30, Y+1	; 0x01
+ 808:	fa 81       	ldd	r31, Y+2	; 0x02
+ 80a:	80 83       	st	Z, r24
+}
+ 80c:	0f 90       	pop	r0
+ 80e:	0f 90       	pop	r0
+ 810:	cf 91       	pop	r28
+ 812:	df 91       	pop	r29
+ 814:	08 95       	ret
+
+00000816 <set_format>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_format(unsigned char *digital_if, enum OPTIONS_DSP_SETUP opDSP)
+{
+ 816:	df 93       	push	r29
+ 818:	cf 93       	push	r28
+ 81a:	00 d0       	rcall	.+0      	; 0x81c <set_format+0x6>
+ 81c:	00 d0       	rcall	.+0      	; 0x81e <set_format+0x8>
+ 81e:	00 d0       	rcall	.+0      	; 0x820 <set_format+0xa>
+ 820:	cd b7       	in	r28, 0x3d	; 61
+ 822:	de b7       	in	r29, 0x3e	; 62
+ 824:	9a 83       	std	Y+2, r25	; 0x02
+ 826:	89 83       	std	Y+1, r24	; 0x01
+ 828:	7c 83       	std	Y+4, r23	; 0x04
+ 82a:	6b 83       	std	Y+3, r22	; 0x03
+    switch(opDSP)
+ 82c:	8b 81       	ldd	r24, Y+3	; 0x03
+ 82e:	9c 81       	ldd	r25, Y+4	; 0x04
+ 830:	9e 83       	std	Y+6, r25	; 0x06
+ 832:	8d 83       	std	Y+5, r24	; 0x05
+ 834:	8d 81       	ldd	r24, Y+5	; 0x05
+ 836:	9e 81       	ldd	r25, Y+6	; 0x06
+ 838:	82 30       	cpi	r24, 0x02	; 2
+ 83a:	91 05       	cpc	r25, r1
+ 83c:	d9 f0       	breq	.+54     	; 0x874 <set_format+0x5e>
+ 83e:	8d 81       	ldd	r24, Y+5	; 0x05
+ 840:	9e 81       	ldd	r25, Y+6	; 0x06
+ 842:	83 30       	cpi	r24, 0x03	; 3
+ 844:	91 05       	cpc	r25, r1
+ 846:	30 f4       	brcc	.+12     	; 0x854 <set_format+0x3e>
+ 848:	8d 81       	ldd	r24, Y+5	; 0x05
+ 84a:	9e 81       	ldd	r25, Y+6	; 0x06
+ 84c:	81 30       	cpi	r24, 0x01	; 1
+ 84e:	91 05       	cpc	r25, r1
+ 850:	61 f0       	breq	.+24     	; 0x86a <set_format+0x54>
+ 852:	1e c0       	rjmp	.+60     	; 0x890 <set_format+0x7a>
+ 854:	8d 81       	ldd	r24, Y+5	; 0x05
+ 856:	9e 81       	ldd	r25, Y+6	; 0x06
+ 858:	83 30       	cpi	r24, 0x03	; 3
+ 85a:	91 05       	cpc	r25, r1
+ 85c:	81 f0       	breq	.+32     	; 0x87e <set_format+0x68>
+ 85e:	8d 81       	ldd	r24, Y+5	; 0x05
+ 860:	9e 81       	ldd	r25, Y+6	; 0x06
+ 862:	84 30       	cpi	r24, 0x04	; 4
+ 864:	91 05       	cpc	r25, r1
+ 866:	81 f0       	breq	.+32     	; 0x888 <set_format+0x72>
+ 868:	13 c0       	rjmp	.+38     	; 0x890 <set_format+0x7a>
+    {
+    case DSP:
+        set_format_DSP(digital_if);
+ 86a:	89 81       	ldd	r24, Y+1	; 0x01
+ 86c:	9a 81       	ldd	r25, Y+2	; 0x02
+ 86e:	0e 94 a3 03 	call	0x746	; 0x746 <set_format_DSP>
+ 872:	0e c0       	rjmp	.+28     	; 0x890 <set_format+0x7a>
+        break;
+
+    case I2S:
+        set_format_I2S(digital_if);
+ 874:	89 81       	ldd	r24, Y+1	; 0x01
+ 876:	9a 81       	ldd	r25, Y+2	; 0x02
+ 878:	0e 94 bd 03 	call	0x77a	; 0x77a <set_format_I2S>
+ 87c:	09 c0       	rjmp	.+18     	; 0x890 <set_format+0x7a>
+        break;
+
+    case MSBLJ:
+        set_format_MSBLJ(digital_if);
+ 87e:	89 81       	ldd	r24, Y+1	; 0x01
+ 880:	9a 81       	ldd	r25, Y+2	; 0x02
+ 882:	0e 94 d7 03 	call	0x7ae	; 0x7ae <set_format_MSBLJ>
+ 886:	04 c0       	rjmp	.+8      	; 0x890 <set_format+0x7a>
+        break;
+
+    case MSBRJ:
+        set_format_MSBRJ(digital_if);
+ 888:	89 81       	ldd	r24, Y+1	; 0x01
+ 88a:	9a 81       	ldd	r25, Y+2	; 0x02
+ 88c:	0e 94 f1 03 	call	0x7e2	; 0x7e2 <set_format_MSBRJ>
+        break;
+    }
+}
+ 890:	26 96       	adiw	r28, 0x06	; 6
+ 892:	0f b6       	in	r0, 0x3f	; 63
+ 894:	f8 94       	cli
+ 896:	de bf       	out	0x3e, r29	; 62
+ 898:	0f be       	out	0x3f, r0	; 63
+ 89a:	cd bf       	out	0x3d, r28	; 61
+ 89c:	cf 91       	pop	r28
+ 89e:	df 91       	pop	r29
+ 8a0:	08 95       	ret
+
+000008a2 <set_data_16bits>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_data_16bits(unsigned char *digital_if)
+{
+ 8a2:	df 93       	push	r29
+ 8a4:	cf 93       	push	r28
+ 8a6:	00 d0       	rcall	.+0      	; 0x8a8 <set_data_16bits+0x6>
+ 8a8:	cd b7       	in	r28, 0x3d	; 61
+ 8aa:	de b7       	in	r29, 0x3e	; 62
+ 8ac:	9a 83       	std	Y+2, r25	; 0x02
+ 8ae:	89 83       	std	Y+1, r24	; 0x01
+    cbiBF(*digital_if,IWL1);
+ 8b0:	e9 81       	ldd	r30, Y+1	; 0x01
+ 8b2:	fa 81       	ldd	r31, Y+2	; 0x02
+ 8b4:	80 81       	ld	r24, Z
+ 8b6:	87 7f       	andi	r24, 0xF7	; 247
+ 8b8:	e9 81       	ldd	r30, Y+1	; 0x01
+ 8ba:	fa 81       	ldd	r31, Y+2	; 0x02
+ 8bc:	80 83       	st	Z, r24
+    cbiBF(*digital_if,IWL0);
+ 8be:	e9 81       	ldd	r30, Y+1	; 0x01
+ 8c0:	fa 81       	ldd	r31, Y+2	; 0x02
+ 8c2:	80 81       	ld	r24, Z
+ 8c4:	8b 7f       	andi	r24, 0xFB	; 251
+ 8c6:	e9 81       	ldd	r30, Y+1	; 0x01
+ 8c8:	fa 81       	ldd	r31, Y+2	; 0x02
+ 8ca:	80 83       	st	Z, r24
+}
+ 8cc:	0f 90       	pop	r0
+ 8ce:	0f 90       	pop	r0
+ 8d0:	cf 91       	pop	r28
+ 8d2:	df 91       	pop	r29
+ 8d4:	08 95       	ret
+
+000008d6 <set_data_20bits>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_data_20bits(unsigned char *digital_if)
+{
+ 8d6:	df 93       	push	r29
+ 8d8:	cf 93       	push	r28
+ 8da:	00 d0       	rcall	.+0      	; 0x8dc <set_data_20bits+0x6>
+ 8dc:	cd b7       	in	r28, 0x3d	; 61
+ 8de:	de b7       	in	r29, 0x3e	; 62
+ 8e0:	9a 83       	std	Y+2, r25	; 0x02
+ 8e2:	89 83       	std	Y+1, r24	; 0x01
+    cbiBF(*digital_if,IWL1);
+ 8e4:	e9 81       	ldd	r30, Y+1	; 0x01
+ 8e6:	fa 81       	ldd	r31, Y+2	; 0x02
+ 8e8:	80 81       	ld	r24, Z
+ 8ea:	87 7f       	andi	r24, 0xF7	; 247
+ 8ec:	e9 81       	ldd	r30, Y+1	; 0x01
+ 8ee:	fa 81       	ldd	r31, Y+2	; 0x02
+ 8f0:	80 83       	st	Z, r24
+    sbiBF(*digital_if,IWL0);
+ 8f2:	e9 81       	ldd	r30, Y+1	; 0x01
+ 8f4:	fa 81       	ldd	r31, Y+2	; 0x02
+ 8f6:	80 81       	ld	r24, Z
+ 8f8:	84 60       	ori	r24, 0x04	; 4
+ 8fa:	e9 81       	ldd	r30, Y+1	; 0x01
+ 8fc:	fa 81       	ldd	r31, Y+2	; 0x02
+ 8fe:	80 83       	st	Z, r24
+}
+ 900:	0f 90       	pop	r0
+ 902:	0f 90       	pop	r0
+ 904:	cf 91       	pop	r28
+ 906:	df 91       	pop	r29
+ 908:	08 95       	ret
+
+0000090a <set_data_24bits>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_data_24bits(unsigned char *digital_if)
+{
+ 90a:	df 93       	push	r29
+ 90c:	cf 93       	push	r28
+ 90e:	00 d0       	rcall	.+0      	; 0x910 <set_data_24bits+0x6>
+ 910:	cd b7       	in	r28, 0x3d	; 61
+ 912:	de b7       	in	r29, 0x3e	; 62
+ 914:	9a 83       	std	Y+2, r25	; 0x02
+ 916:	89 83       	std	Y+1, r24	; 0x01
+    sbiBF(*digital_if,IWL1);
+ 918:	e9 81       	ldd	r30, Y+1	; 0x01
+ 91a:	fa 81       	ldd	r31, Y+2	; 0x02
+ 91c:	80 81       	ld	r24, Z
+ 91e:	88 60       	ori	r24, 0x08	; 8
+ 920:	e9 81       	ldd	r30, Y+1	; 0x01
+ 922:	fa 81       	ldd	r31, Y+2	; 0x02
+ 924:	80 83       	st	Z, r24
+    cbiBF(*digital_if,IWL0);
+ 926:	e9 81       	ldd	r30, Y+1	; 0x01
+ 928:	fa 81       	ldd	r31, Y+2	; 0x02
+ 92a:	80 81       	ld	r24, Z
+ 92c:	8b 7f       	andi	r24, 0xFB	; 251
+ 92e:	e9 81       	ldd	r30, Y+1	; 0x01
+ 930:	fa 81       	ldd	r31, Y+2	; 0x02
+ 932:	80 83       	st	Z, r24
+}
+ 934:	0f 90       	pop	r0
+ 936:	0f 90       	pop	r0
+ 938:	cf 91       	pop	r28
+ 93a:	df 91       	pop	r29
+ 93c:	08 95       	ret
+
+0000093e <set_data_32bits>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_data_32bits(unsigned char *digital_if)
+{
+ 93e:	df 93       	push	r29
+ 940:	cf 93       	push	r28
+ 942:	00 d0       	rcall	.+0      	; 0x944 <set_data_32bits+0x6>
+ 944:	cd b7       	in	r28, 0x3d	; 61
+ 946:	de b7       	in	r29, 0x3e	; 62
+ 948:	9a 83       	std	Y+2, r25	; 0x02
+ 94a:	89 83       	std	Y+1, r24	; 0x01
+    sbiBF(*digital_if,IWL1);
+ 94c:	e9 81       	ldd	r30, Y+1	; 0x01
+ 94e:	fa 81       	ldd	r31, Y+2	; 0x02
+ 950:	80 81       	ld	r24, Z
+ 952:	88 60       	ori	r24, 0x08	; 8
+ 954:	e9 81       	ldd	r30, Y+1	; 0x01
+ 956:	fa 81       	ldd	r31, Y+2	; 0x02
+ 958:	80 83       	st	Z, r24
+    sbiBF(*digital_if,IWL0);
+ 95a:	e9 81       	ldd	r30, Y+1	; 0x01
+ 95c:	fa 81       	ldd	r31, Y+2	; 0x02
+ 95e:	80 81       	ld	r24, Z
+ 960:	84 60       	ori	r24, 0x04	; 4
+ 962:	e9 81       	ldd	r30, Y+1	; 0x01
+ 964:	fa 81       	ldd	r31, Y+2	; 0x02
+ 966:	80 83       	st	Z, r24
+}
+ 968:	0f 90       	pop	r0
+ 96a:	0f 90       	pop	r0
+ 96c:	cf 91       	pop	r28
+ 96e:	df 91       	pop	r29
+ 970:	08 95       	ret
+
+00000972 <set_data>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_data(unsigned char *digital_if, enum OPTIONS_DATA_BIT opDATA)
+{
+ 972:	df 93       	push	r29
+ 974:	cf 93       	push	r28
+ 976:	00 d0       	rcall	.+0      	; 0x978 <set_data+0x6>
+ 978:	00 d0       	rcall	.+0      	; 0x97a <set_data+0x8>
+ 97a:	00 d0       	rcall	.+0      	; 0x97c <set_data+0xa>
+ 97c:	cd b7       	in	r28, 0x3d	; 61
+ 97e:	de b7       	in	r29, 0x3e	; 62
+ 980:	9a 83       	std	Y+2, r25	; 0x02
+ 982:	89 83       	std	Y+1, r24	; 0x01
+ 984:	7c 83       	std	Y+4, r23	; 0x04
+ 986:	6b 83       	std	Y+3, r22	; 0x03
+    switch(opDATA)
+ 988:	8b 81       	ldd	r24, Y+3	; 0x03
+ 98a:	9c 81       	ldd	r25, Y+4	; 0x04
+ 98c:	9e 83       	std	Y+6, r25	; 0x06
+ 98e:	8d 83       	std	Y+5, r24	; 0x05
+ 990:	8d 81       	ldd	r24, Y+5	; 0x05
+ 992:	9e 81       	ldd	r25, Y+6	; 0x06
+ 994:	82 30       	cpi	r24, 0x02	; 2
+ 996:	91 05       	cpc	r25, r1
+ 998:	d9 f0       	breq	.+54     	; 0x9d0 <set_data+0x5e>
+ 99a:	8d 81       	ldd	r24, Y+5	; 0x05
+ 99c:	9e 81       	ldd	r25, Y+6	; 0x06
+ 99e:	83 30       	cpi	r24, 0x03	; 3
+ 9a0:	91 05       	cpc	r25, r1
+ 9a2:	30 f4       	brcc	.+12     	; 0x9b0 <set_data+0x3e>
+ 9a4:	8d 81       	ldd	r24, Y+5	; 0x05
+ 9a6:	9e 81       	ldd	r25, Y+6	; 0x06
+ 9a8:	81 30       	cpi	r24, 0x01	; 1
+ 9aa:	91 05       	cpc	r25, r1
+ 9ac:	61 f0       	breq	.+24     	; 0x9c6 <set_data+0x54>
+ 9ae:	1e c0       	rjmp	.+60     	; 0x9ec <set_data+0x7a>
+ 9b0:	8d 81       	ldd	r24, Y+5	; 0x05
+ 9b2:	9e 81       	ldd	r25, Y+6	; 0x06
+ 9b4:	83 30       	cpi	r24, 0x03	; 3
+ 9b6:	91 05       	cpc	r25, r1
+ 9b8:	81 f0       	breq	.+32     	; 0x9da <set_data+0x68>
+ 9ba:	8d 81       	ldd	r24, Y+5	; 0x05
+ 9bc:	9e 81       	ldd	r25, Y+6	; 0x06
+ 9be:	84 30       	cpi	r24, 0x04	; 4
+ 9c0:	91 05       	cpc	r25, r1
+ 9c2:	81 f0       	breq	.+32     	; 0x9e4 <set_data+0x72>
+ 9c4:	13 c0       	rjmp	.+38     	; 0x9ec <set_data+0x7a>
+    {
+    case BIT16:
+        set_data_16bits(digital_if);
+ 9c6:	89 81       	ldd	r24, Y+1	; 0x01
+ 9c8:	9a 81       	ldd	r25, Y+2	; 0x02
+ 9ca:	0e 94 51 04 	call	0x8a2	; 0x8a2 <set_data_16bits>
+ 9ce:	0e c0       	rjmp	.+28     	; 0x9ec <set_data+0x7a>
+        break;
+
+    case BIT20:
+        set_data_20bits(digital_if);
+ 9d0:	89 81       	ldd	r24, Y+1	; 0x01
+ 9d2:	9a 81       	ldd	r25, Y+2	; 0x02
+ 9d4:	0e 94 6b 04 	call	0x8d6	; 0x8d6 <set_data_20bits>
+ 9d8:	09 c0       	rjmp	.+18     	; 0x9ec <set_data+0x7a>
+        break;
+
+    case BIT24:
+        set_data_24bits(digital_if);
+ 9da:	89 81       	ldd	r24, Y+1	; 0x01
+ 9dc:	9a 81       	ldd	r25, Y+2	; 0x02
+ 9de:	0e 94 85 04 	call	0x90a	; 0x90a <set_data_24bits>
+ 9e2:	04 c0       	rjmp	.+8      	; 0x9ec <set_data+0x7a>
+        break;
+
+    case BIT32:
+        set_data_32bits(digital_if);
+ 9e4:	89 81       	ldd	r24, Y+1	; 0x01
+ 9e6:	9a 81       	ldd	r25, Y+2	; 0x02
+ 9e8:	0e 94 9f 04 	call	0x93e	; 0x93e <set_data_32bits>
+        break;
+    }
+
+}
+ 9ec:	26 96       	adiw	r28, 0x06	; 6
+ 9ee:	0f b6       	in	r0, 0x3f	; 63
+ 9f0:	f8 94       	cli
+ 9f2:	de bf       	out	0x3e, r29	; 62
+ 9f4:	0f be       	out	0x3f, r0	; 63
+ 9f6:	cd bf       	out	0x3d, r28	; 61
+ 9f8:	cf 91       	pop	r28
+ 9fa:	df 91       	pop	r29
+ 9fc:	08 95       	ret
+
+000009fe <set_fs_8>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_fs_8(unsigned char *sampling)
+{
+ 9fe:	df 93       	push	r29
+ a00:	cf 93       	push	r28
+ a02:	00 d0       	rcall	.+0      	; 0xa04 <set_fs_8+0x6>
+ a04:	cd b7       	in	r28, 0x3d	; 61
+ a06:	de b7       	in	r29, 0x3e	; 62
+ a08:	9a 83       	std	Y+2, r25	; 0x02
+ a0a:	89 83       	std	Y+1, r24	; 0x01
+    cbiBF(*sampling,SR3);
+ a0c:	e9 81       	ldd	r30, Y+1	; 0x01
+ a0e:	fa 81       	ldd	r31, Y+2	; 0x02
+ a10:	80 81       	ld	r24, Z
+ a12:	8f 7d       	andi	r24, 0xDF	; 223
+ a14:	e9 81       	ldd	r30, Y+1	; 0x01
+ a16:	fa 81       	ldd	r31, Y+2	; 0x02
+ a18:	80 83       	st	Z, r24
+    cbiBF(*sampling,SR2);
+ a1a:	e9 81       	ldd	r30, Y+1	; 0x01
+ a1c:	fa 81       	ldd	r31, Y+2	; 0x02
+ a1e:	80 81       	ld	r24, Z
+ a20:	8f 7e       	andi	r24, 0xEF	; 239
+ a22:	e9 81       	ldd	r30, Y+1	; 0x01
+ a24:	fa 81       	ldd	r31, Y+2	; 0x02
+ a26:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR1);
+ a28:	e9 81       	ldd	r30, Y+1	; 0x01
+ a2a:	fa 81       	ldd	r31, Y+2	; 0x02
+ a2c:	80 81       	ld	r24, Z
+ a2e:	88 60       	ori	r24, 0x08	; 8
+ a30:	e9 81       	ldd	r30, Y+1	; 0x01
+ a32:	fa 81       	ldd	r31, Y+2	; 0x02
+ a34:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR0);
+ a36:	e9 81       	ldd	r30, Y+1	; 0x01
+ a38:	fa 81       	ldd	r31, Y+2	; 0x02
+ a3a:	80 81       	ld	r24, Z
+ a3c:	84 60       	ori	r24, 0x04	; 4
+ a3e:	e9 81       	ldd	r30, Y+1	; 0x01
+ a40:	fa 81       	ldd	r31, Y+2	; 0x02
+ a42:	80 83       	st	Z, r24
+}
+ a44:	0f 90       	pop	r0
+ a46:	0f 90       	pop	r0
+ a48:	cf 91       	pop	r28
+ a4a:	df 91       	pop	r29
+ a4c:	08 95       	ret
+
+00000a4e <set_fs_32>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_fs_32(unsigned char *sampling)
+{
+ a4e:	df 93       	push	r29
+ a50:	cf 93       	push	r28
+ a52:	00 d0       	rcall	.+0      	; 0xa54 <set_fs_32+0x6>
+ a54:	cd b7       	in	r28, 0x3d	; 61
+ a56:	de b7       	in	r29, 0x3e	; 62
+ a58:	9a 83       	std	Y+2, r25	; 0x02
+ a5a:	89 83       	std	Y+1, r24	; 0x01
+    cbiBF(*sampling,SR3);
+ a5c:	e9 81       	ldd	r30, Y+1	; 0x01
+ a5e:	fa 81       	ldd	r31, Y+2	; 0x02
+ a60:	80 81       	ld	r24, Z
+ a62:	8f 7d       	andi	r24, 0xDF	; 223
+ a64:	e9 81       	ldd	r30, Y+1	; 0x01
+ a66:	fa 81       	ldd	r31, Y+2	; 0x02
+ a68:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR2);
+ a6a:	e9 81       	ldd	r30, Y+1	; 0x01
+ a6c:	fa 81       	ldd	r31, Y+2	; 0x02
+ a6e:	80 81       	ld	r24, Z
+ a70:	80 61       	ori	r24, 0x10	; 16
+ a72:	e9 81       	ldd	r30, Y+1	; 0x01
+ a74:	fa 81       	ldd	r31, Y+2	; 0x02
+ a76:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR1);
+ a78:	e9 81       	ldd	r30, Y+1	; 0x01
+ a7a:	fa 81       	ldd	r31, Y+2	; 0x02
+ a7c:	80 81       	ld	r24, Z
+ a7e:	88 60       	ori	r24, 0x08	; 8
+ a80:	e9 81       	ldd	r30, Y+1	; 0x01
+ a82:	fa 81       	ldd	r31, Y+2	; 0x02
+ a84:	80 83       	st	Z, r24
+    cbiBF(*sampling,SR0);
+ a86:	e9 81       	ldd	r30, Y+1	; 0x01
+ a88:	fa 81       	ldd	r31, Y+2	; 0x02
+ a8a:	80 81       	ld	r24, Z
+ a8c:	8b 7f       	andi	r24, 0xFB	; 251
+ a8e:	e9 81       	ldd	r30, Y+1	; 0x01
+ a90:	fa 81       	ldd	r31, Y+2	; 0x02
+ a92:	80 83       	st	Z, r24
+}
+ a94:	0f 90       	pop	r0
+ a96:	0f 90       	pop	r0
+ a98:	cf 91       	pop	r28
+ a9a:	df 91       	pop	r29
+ a9c:	08 95       	ret
+
+00000a9e <set_fs_441>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_fs_441(unsigned char *sampling)
+{
+ a9e:	df 93       	push	r29
+ aa0:	cf 93       	push	r28
+ aa2:	00 d0       	rcall	.+0      	; 0xaa4 <set_fs_441+0x6>
+ aa4:	cd b7       	in	r28, 0x3d	; 61
+ aa6:	de b7       	in	r29, 0x3e	; 62
+ aa8:	9a 83       	std	Y+2, r25	; 0x02
+ aaa:	89 83       	std	Y+1, r24	; 0x01
+    sbiBF(*sampling,SR3);
+ aac:	e9 81       	ldd	r30, Y+1	; 0x01
+ aae:	fa 81       	ldd	r31, Y+2	; 0x02
+ ab0:	80 81       	ld	r24, Z
+ ab2:	80 62       	ori	r24, 0x20	; 32
+ ab4:	e9 81       	ldd	r30, Y+1	; 0x01
+ ab6:	fa 81       	ldd	r31, Y+2	; 0x02
+ ab8:	80 83       	st	Z, r24
+    cbiBF(*sampling,SR2);
+ aba:	e9 81       	ldd	r30, Y+1	; 0x01
+ abc:	fa 81       	ldd	r31, Y+2	; 0x02
+ abe:	80 81       	ld	r24, Z
+ ac0:	8f 7e       	andi	r24, 0xEF	; 239
+ ac2:	e9 81       	ldd	r30, Y+1	; 0x01
+ ac4:	fa 81       	ldd	r31, Y+2	; 0x02
+ ac6:	80 83       	st	Z, r24
+    cbiBF(*sampling,SR1);
+ ac8:	e9 81       	ldd	r30, Y+1	; 0x01
+ aca:	fa 81       	ldd	r31, Y+2	; 0x02
+ acc:	80 81       	ld	r24, Z
+ ace:	87 7f       	andi	r24, 0xF7	; 247
+ ad0:	e9 81       	ldd	r30, Y+1	; 0x01
+ ad2:	fa 81       	ldd	r31, Y+2	; 0x02
+ ad4:	80 83       	st	Z, r24
+    cbiBF(*sampling,SR0);
+ ad6:	e9 81       	ldd	r30, Y+1	; 0x01
+ ad8:	fa 81       	ldd	r31, Y+2	; 0x02
+ ada:	80 81       	ld	r24, Z
+ adc:	8b 7f       	andi	r24, 0xFB	; 251
+ ade:	e9 81       	ldd	r30, Y+1	; 0x01
+ ae0:	fa 81       	ldd	r31, Y+2	; 0x02
+ ae2:	80 83       	st	Z, r24
+}
+ ae4:	0f 90       	pop	r0
+ ae6:	0f 90       	pop	r0
+ ae8:	cf 91       	pop	r28
+ aea:	df 91       	pop	r29
+ aec:	08 95       	ret
+
+00000aee <set_fs_48>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_fs_48(unsigned char *sampling)
+{
+ aee:	df 93       	push	r29
+ af0:	cf 93       	push	r28
+ af2:	00 d0       	rcall	.+0      	; 0xaf4 <set_fs_48+0x6>
+ af4:	cd b7       	in	r28, 0x3d	; 61
+ af6:	de b7       	in	r29, 0x3e	; 62
+ af8:	9a 83       	std	Y+2, r25	; 0x02
+ afa:	89 83       	std	Y+1, r24	; 0x01
+    cbiBF(*sampling,SR3);
+ afc:	e9 81       	ldd	r30, Y+1	; 0x01
+ afe:	fa 81       	ldd	r31, Y+2	; 0x02
+ b00:	80 81       	ld	r24, Z
+ b02:	8f 7d       	andi	r24, 0xDF	; 223
+ b04:	e9 81       	ldd	r30, Y+1	; 0x01
+ b06:	fa 81       	ldd	r31, Y+2	; 0x02
+ b08:	80 83       	st	Z, r24
+    cbiBF(*sampling,SR2);
+ b0a:	e9 81       	ldd	r30, Y+1	; 0x01
+ b0c:	fa 81       	ldd	r31, Y+2	; 0x02
+ b0e:	80 81       	ld	r24, Z
+ b10:	8f 7e       	andi	r24, 0xEF	; 239
+ b12:	e9 81       	ldd	r30, Y+1	; 0x01
+ b14:	fa 81       	ldd	r31, Y+2	; 0x02
+ b16:	80 83       	st	Z, r24
+    cbiBF(*sampling,SR1);
+ b18:	e9 81       	ldd	r30, Y+1	; 0x01
+ b1a:	fa 81       	ldd	r31, Y+2	; 0x02
+ b1c:	80 81       	ld	r24, Z
+ b1e:	87 7f       	andi	r24, 0xF7	; 247
+ b20:	e9 81       	ldd	r30, Y+1	; 0x01
+ b22:	fa 81       	ldd	r31, Y+2	; 0x02
+ b24:	80 83       	st	Z, r24
+    cbiBF(*sampling,SR0);
+ b26:	e9 81       	ldd	r30, Y+1	; 0x01
+ b28:	fa 81       	ldd	r31, Y+2	; 0x02
+ b2a:	80 81       	ld	r24, Z
+ b2c:	8b 7f       	andi	r24, 0xFB	; 251
+ b2e:	e9 81       	ldd	r30, Y+1	; 0x01
+ b30:	fa 81       	ldd	r31, Y+2	; 0x02
+ b32:	80 83       	st	Z, r24
+}
+ b34:	0f 90       	pop	r0
+ b36:	0f 90       	pop	r0
+ b38:	cf 91       	pop	r28
+ b3a:	df 91       	pop	r29
+ b3c:	08 95       	ret
+
+00000b3e <set_fs_882>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_fs_882(unsigned char *sampling)
+{
+ b3e:	df 93       	push	r29
+ b40:	cf 93       	push	r28
+ b42:	00 d0       	rcall	.+0      	; 0xb44 <set_fs_882+0x6>
+ b44:	cd b7       	in	r28, 0x3d	; 61
+ b46:	de b7       	in	r29, 0x3e	; 62
+ b48:	9a 83       	std	Y+2, r25	; 0x02
+ b4a:	89 83       	std	Y+1, r24	; 0x01
+    sbiBF(*sampling,SR3);
+ b4c:	e9 81       	ldd	r30, Y+1	; 0x01
+ b4e:	fa 81       	ldd	r31, Y+2	; 0x02
+ b50:	80 81       	ld	r24, Z
+ b52:	80 62       	ori	r24, 0x20	; 32
+ b54:	e9 81       	ldd	r30, Y+1	; 0x01
+ b56:	fa 81       	ldd	r31, Y+2	; 0x02
+ b58:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR2);
+ b5a:	e9 81       	ldd	r30, Y+1	; 0x01
+ b5c:	fa 81       	ldd	r31, Y+2	; 0x02
+ b5e:	80 81       	ld	r24, Z
+ b60:	80 61       	ori	r24, 0x10	; 16
+ b62:	e9 81       	ldd	r30, Y+1	; 0x01
+ b64:	fa 81       	ldd	r31, Y+2	; 0x02
+ b66:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR1);
+ b68:	e9 81       	ldd	r30, Y+1	; 0x01
+ b6a:	fa 81       	ldd	r31, Y+2	; 0x02
+ b6c:	80 81       	ld	r24, Z
+ b6e:	88 60       	ori	r24, 0x08	; 8
+ b70:	e9 81       	ldd	r30, Y+1	; 0x01
+ b72:	fa 81       	ldd	r31, Y+2	; 0x02
+ b74:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR0);
+ b76:	e9 81       	ldd	r30, Y+1	; 0x01
+ b78:	fa 81       	ldd	r31, Y+2	; 0x02
+ b7a:	80 81       	ld	r24, Z
+ b7c:	84 60       	ori	r24, 0x04	; 4
+ b7e:	e9 81       	ldd	r30, Y+1	; 0x01
+ b80:	fa 81       	ldd	r31, Y+2	; 0x02
+ b82:	80 83       	st	Z, r24
+}
+ b84:	0f 90       	pop	r0
+ b86:	0f 90       	pop	r0
+ b88:	cf 91       	pop	r28
+ b8a:	df 91       	pop	r29
+ b8c:	08 95       	ret
+
+00000b8e <set_fs_96>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_fs_96(unsigned char *sampling)
+{
+ b8e:	df 93       	push	r29
+ b90:	cf 93       	push	r28
+ b92:	00 d0       	rcall	.+0      	; 0xb94 <set_fs_96+0x6>
+ b94:	cd b7       	in	r28, 0x3d	; 61
+ b96:	de b7       	in	r29, 0x3e	; 62
+ b98:	9a 83       	std	Y+2, r25	; 0x02
+ b9a:	89 83       	std	Y+1, r24	; 0x01
+    cbiBF(*sampling,SR3);
+ b9c:	e9 81       	ldd	r30, Y+1	; 0x01
+ b9e:	fa 81       	ldd	r31, Y+2	; 0x02
+ ba0:	80 81       	ld	r24, Z
+ ba2:	8f 7d       	andi	r24, 0xDF	; 223
+ ba4:	e9 81       	ldd	r30, Y+1	; 0x01
+ ba6:	fa 81       	ldd	r31, Y+2	; 0x02
+ ba8:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR2);
+ baa:	e9 81       	ldd	r30, Y+1	; 0x01
+ bac:	fa 81       	ldd	r31, Y+2	; 0x02
+ bae:	80 81       	ld	r24, Z
+ bb0:	80 61       	ori	r24, 0x10	; 16
+ bb2:	e9 81       	ldd	r30, Y+1	; 0x01
+ bb4:	fa 81       	ldd	r31, Y+2	; 0x02
+ bb6:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR1);
+ bb8:	e9 81       	ldd	r30, Y+1	; 0x01
+ bba:	fa 81       	ldd	r31, Y+2	; 0x02
+ bbc:	80 81       	ld	r24, Z
+ bbe:	88 60       	ori	r24, 0x08	; 8
+ bc0:	e9 81       	ldd	r30, Y+1	; 0x01
+ bc2:	fa 81       	ldd	r31, Y+2	; 0x02
+ bc4:	80 83       	st	Z, r24
+    sbiBF(*sampling,SR0);
+ bc6:	e9 81       	ldd	r30, Y+1	; 0x01
+ bc8:	fa 81       	ldd	r31, Y+2	; 0x02
+ bca:	80 81       	ld	r24, Z
+ bcc:	84 60       	ori	r24, 0x04	; 4
+ bce:	e9 81       	ldd	r30, Y+1	; 0x01
+ bd0:	fa 81       	ldd	r31, Y+2	; 0x02
+ bd2:	80 83       	st	Z, r24
+}
+ bd4:	0f 90       	pop	r0
+ bd6:	0f 90       	pop	r0
+ bd8:	cf 91       	pop	r28
+ bda:	df 91       	pop	r29
+ bdc:	08 95       	ret
+
+00000bde <set_fs>:
+***********************************************************/
+/**********************************************************
+* STATE: CLEAN
+***********************************************************/
+void set_fs(unsigned char *sampling, enum OPTIONS_FS opFS)
+{
+ bde:	df 93       	push	r29
+ be0:	cf 93       	push	r28
+ be2:	00 d0       	rcall	.+0      	; 0xbe4 <set_fs+0x6>
+ be4:	00 d0       	rcall	.+0      	; 0xbe6 <set_fs+0x8>
+ be6:	00 d0       	rcall	.+0      	; 0xbe8 <set_fs+0xa>
+ be8:	cd b7       	in	r28, 0x3d	; 61
+ bea:	de b7       	in	r29, 0x3e	; 62
+ bec:	9a 83       	std	Y+2, r25	; 0x02
+ bee:	89 83       	std	Y+1, r24	; 0x01
+ bf0:	7c 83       	std	Y+4, r23	; 0x04
+ bf2:	6b 83       	std	Y+3, r22	; 0x03
+    switch(opFS)
+ bf4:	8b 81       	ldd	r24, Y+3	; 0x03
+ bf6:	9c 81       	ldd	r25, Y+4	; 0x04
+ bf8:	9e 83       	std	Y+6, r25	; 0x06
+ bfa:	8d 83       	std	Y+5, r24	; 0x05
+ bfc:	8d 81       	ldd	r24, Y+5	; 0x05
+ bfe:	9e 81       	ldd	r25, Y+6	; 0x06
+ c00:	83 30       	cpi	r24, 0x03	; 3
+ c02:	91 05       	cpc	r25, r1
+ c04:	51 f1       	breq	.+84     	; 0xc5a <set_fs+0x7c>
+ c06:	8d 81       	ldd	r24, Y+5	; 0x05
+ c08:	9e 81       	ldd	r25, Y+6	; 0x06
+ c0a:	84 30       	cpi	r24, 0x04	; 4
+ c0c:	91 05       	cpc	r25, r1
+ c0e:	58 f4       	brcc	.+22     	; 0xc26 <set_fs+0x48>
+ c10:	8d 81       	ldd	r24, Y+5	; 0x05
+ c12:	9e 81       	ldd	r25, Y+6	; 0x06
+ c14:	81 30       	cpi	r24, 0x01	; 1
+ c16:	91 05       	cpc	r25, r1
+ c18:	b1 f0       	breq	.+44     	; 0xc46 <set_fs+0x68>
+ c1a:	8d 81       	ldd	r24, Y+5	; 0x05
+ c1c:	9e 81       	ldd	r25, Y+6	; 0x06
+ c1e:	82 30       	cpi	r24, 0x02	; 2
+ c20:	91 05       	cpc	r25, r1
+ c22:	b1 f0       	breq	.+44     	; 0xc50 <set_fs+0x72>
+ c24:	2d c0       	rjmp	.+90     	; 0xc80 <set_fs+0xa2>
+ c26:	8d 81       	ldd	r24, Y+5	; 0x05
+ c28:	9e 81       	ldd	r25, Y+6	; 0x06
+ c2a:	85 30       	cpi	r24, 0x05	; 5
+ c2c:	91 05       	cpc	r25, r1
+ c2e:	f9 f0       	breq	.+62     	; 0xc6e <set_fs+0x90>
+ c30:	8d 81       	ldd	r24, Y+5	; 0x05
+ c32:	9e 81       	ldd	r25, Y+6	; 0x06
+ c34:	85 30       	cpi	r24, 0x05	; 5
+ c36:	91 05       	cpc	r25, r1
+ c38:	a8 f0       	brcs	.+42     	; 0xc64 <set_fs+0x86>
+ c3a:	8d 81       	ldd	r24, Y+5	; 0x05
+ c3c:	9e 81       	ldd	r25, Y+6	; 0x06
+ c3e:	86 30       	cpi	r24, 0x06	; 6
+ c40:	91 05       	cpc	r25, r1
+ c42:	d1 f0       	breq	.+52     	; 0xc78 <set_fs+0x9a>
+ c44:	1d c0       	rjmp	.+58     	; 0xc80 <set_fs+0xa2>
+    {
+    case FS8:
+        set_fs_8(sampling);
+ c46:	89 81       	ldd	r24, Y+1	; 0x01
+ c48:	9a 81       	ldd	r25, Y+2	; 0x02
+ c4a:	0e 94 ff 04 	call	0x9fe	; 0x9fe <set_fs_8>
+ c4e:	18 c0       	rjmp	.+48     	; 0xc80 <set_fs+0xa2>
+        break;
+
+    case FS32:
+        set_fs_32(sampling);
+ c50:	89 81       	ldd	r24, Y+1	; 0x01
+ c52:	9a 81       	ldd	r25, Y+2	; 0x02
+ c54:	0e 94 27 05 	call	0xa4e	; 0xa4e <set_fs_32>
+ c58:	13 c0       	rjmp	.+38     	; 0xc80 <set_fs+0xa2>
+        break;
+
+    case FS441:
+        set_fs_441(sampling);
+ c5a:	89 81       	ldd	r24, Y+1	; 0x01
+ c5c:	9a 81       	ldd	r25, Y+2	; 0x02
+ c5e:	0e 94 4f 05 	call	0xa9e	; 0xa9e <set_fs_441>
+ c62:	0e c0       	rjmp	.+28     	; 0xc80 <set_fs+0xa2>
+        break;
+
+    case FS48:
+        set_fs_48(sampling);
+ c64:	89 81       	ldd	r24, Y+1	; 0x01
+ c66:	9a 81       	ldd	r25, Y+2	; 0x02
+ c68:	0e 94 77 05 	call	0xaee	; 0xaee <set_fs_48>
+ c6c:	09 c0       	rjmp	.+18     	; 0xc80 <set_fs+0xa2>
+        break;
+
+    case FS882:
+        set_fs_882(sampling);
+ c6e:	89 81       	ldd	r24, Y+1	; 0x01
+ c70:	9a 81       	ldd	r25, Y+2	; 0x02
+ c72:	0e 94 9f 05 	call	0xb3e	; 0xb3e <set_fs_882>
+ c76:	04 c0       	rjmp	.+8      	; 0xc80 <set_fs+0xa2>
+        break;
+
+    case FS96:
+        set_fs_96(sampling);
+ c78:	89 81       	ldd	r24, Y+1	; 0x01
+ c7a:	9a 81       	ldd	r25, Y+2	; 0x02
+ c7c:	0e 94 c7 05 	call	0xb8e	; 0xb8e <set_fs_96>
+        break;
+    }
+}
+ c80:	26 96       	adiw	r28, 0x06	; 6
+ c82:	0f b6       	in	r0, 0x3f	; 63
+ c84:	f8 94       	cli
+ c86:	de bf       	out	0x3e, r29	; 62
+ c88:	0f be       	out	0x3f, r0	; 63
+ c8a:	cd bf       	out	0x3d, r28	; 61
+ c8c:	cf 91       	pop	r28
+ c8e:	df 91       	pop	r29
+ c90:	08 95       	ret
+
+00000c92 <I2C_init>:
+ c92:	df 93       	push	r29
+ c94:	cf 93       	push	r28
+ c96:	cd b7       	in	r28, 0x3d	; 61
+ c98:	de b7       	in	r29, 0x3e	; 62
+ c9a:	e8 eb       	ldi	r30, 0xB8	; 184
+ c9c:	f0 e0       	ldi	r31, 0x00	; 0
+ c9e:	81 e1       	ldi	r24, 0x11	; 17
+ ca0:	80 83       	st	Z, r24
+ ca2:	ec eb       	ldi	r30, 0xBC	; 188
+ ca4:	f0 e0       	ldi	r31, 0x00	; 0
+ ca6:	10 82       	st	Z, r1
+ ca8:	e9 eb       	ldi	r30, 0xB9	; 185
+ caa:	f0 e0       	ldi	r31, 0x00	; 0
+ cac:	10 82       	st	Z, r1
+ cae:	cf 91       	pop	r28
+ cb0:	df 91       	pop	r29
+ cb2:	08 95       	ret
+
+00000cb4 <I2C_start>:
+ cb4:	df 93       	push	r29
+ cb6:	cf 93       	push	r28
+ cb8:	cd b7       	in	r28, 0x3d	; 61
+ cba:	de b7       	in	r29, 0x3e	; 62
+ cbc:	ec eb       	ldi	r30, 0xBC	; 188
+ cbe:	f0 e0       	ldi	r31, 0x00	; 0
+ cc0:	84 ea       	ldi	r24, 0xA4	; 164
+ cc2:	80 83       	st	Z, r24
+ cc4:	ec eb       	ldi	r30, 0xBC	; 188
+ cc6:	f0 e0       	ldi	r31, 0x00	; 0
+ cc8:	80 81       	ld	r24, Z
+ cca:	88 23       	and	r24, r24
+ ccc:	dc f7       	brge	.-10     	; 0xcc4 <I2C_start+0x10>
+ cce:	e9 eb       	ldi	r30, 0xB9	; 185
+ cd0:	f0 e0       	ldi	r31, 0x00	; 0
+ cd2:	80 81       	ld	r24, Z
+ cd4:	88 2f       	mov	r24, r24
+ cd6:	90 e0       	ldi	r25, 0x00	; 0
+ cd8:	88 7f       	andi	r24, 0xF8	; 248
+ cda:	90 70       	andi	r25, 0x00	; 0
+ cdc:	88 30       	cpi	r24, 0x08	; 8
+ cde:	91 05       	cpc	r25, r1
+ ce0:	11 f0       	breq	.+4      	; 0xce6 <I2C_start+0x32>
+ ce2:	0e 94 dc 06 	call	0xdb8	; 0xdb8 <ERROR_TRANSMISSION>
+ ce6:	cf 91       	pop	r28
+ ce8:	df 91       	pop	r29
+ cea:	08 95       	ret
+
+00000cec <I2C_write>:
+ cec:	df 93       	push	r29
+ cee:	cf 93       	push	r28
+ cf0:	00 d0       	rcall	.+0      	; 0xcf2 <I2C_write+0x6>
+ cf2:	00 d0       	rcall	.+0      	; 0xcf4 <I2C_write+0x8>
+ cf4:	0f 92       	push	r0
+ cf6:	cd b7       	in	r28, 0x3d	; 61
+ cf8:	de b7       	in	r29, 0x3e	; 62
+ cfa:	89 83       	std	Y+1, r24	; 0x01
+ cfc:	7b 83       	std	Y+3, r23	; 0x03
+ cfe:	6a 83       	std	Y+2, r22	; 0x02
+ d00:	eb eb       	ldi	r30, 0xBB	; 187
+ d02:	f0 e0       	ldi	r31, 0x00	; 0
+ d04:	89 81       	ldd	r24, Y+1	; 0x01
+ d06:	80 83       	st	Z, r24
+ d08:	ec eb       	ldi	r30, 0xBC	; 188
+ d0a:	f0 e0       	ldi	r31, 0x00	; 0
+ d0c:	84 e8       	ldi	r24, 0x84	; 132
+ d0e:	80 83       	st	Z, r24
+ d10:	ec eb       	ldi	r30, 0xBC	; 188
+ d12:	f0 e0       	ldi	r31, 0x00	; 0
+ d14:	80 81       	ld	r24, Z
+ d16:	88 23       	and	r24, r24
+ d18:	dc f7       	brge	.-10     	; 0xd10 <I2C_write+0x24>
+ d1a:	8a 81       	ldd	r24, Y+2	; 0x02
+ d1c:	9b 81       	ldd	r25, Y+3	; 0x03
+ d1e:	9d 83       	std	Y+5, r25	; 0x05
+ d20:	8c 83       	std	Y+4, r24	; 0x04
+ d22:	8c 81       	ldd	r24, Y+4	; 0x04
+ d24:	9d 81       	ldd	r25, Y+5	; 0x05
+ d26:	82 30       	cpi	r24, 0x02	; 2
+ d28:	91 05       	cpc	r25, r1
+ d2a:	b9 f0       	breq	.+46     	; 0xd5a <I2C_write+0x6e>
+ d2c:	8c 81       	ldd	r24, Y+4	; 0x04
+ d2e:	9d 81       	ldd	r25, Y+5	; 0x05
+ d30:	83 30       	cpi	r24, 0x03	; 3
+ d32:	91 05       	cpc	r25, r1
+ d34:	f9 f0       	breq	.+62     	; 0xd74 <I2C_write+0x88>
+ d36:	8c 81       	ldd	r24, Y+4	; 0x04
+ d38:	9d 81       	ldd	r25, Y+5	; 0x05
+ d3a:	81 30       	cpi	r24, 0x01	; 1
+ d3c:	91 05       	cpc	r25, r1
+ d3e:	39 f5       	brne	.+78     	; 0xd8e <I2C_write+0xa2>
+ d40:	e9 eb       	ldi	r30, 0xB9	; 185
+ d42:	f0 e0       	ldi	r31, 0x00	; 0
+ d44:	80 81       	ld	r24, Z
+ d46:	88 2f       	mov	r24, r24
+ d48:	90 e0       	ldi	r25, 0x00	; 0
+ d4a:	88 7f       	andi	r24, 0xF8	; 248
+ d4c:	90 70       	andi	r25, 0x00	; 0
+ d4e:	80 34       	cpi	r24, 0x40	; 64
+ d50:	91 05       	cpc	r25, r1
+ d52:	f9 f0       	breq	.+62     	; 0xd92 <I2C_write+0xa6>
+ d54:	0e 94 dc 06 	call	0xdb8	; 0xdb8 <ERROR_TRANSMISSION>
+ d58:	1c c0       	rjmp	.+56     	; 0xd92 <I2C_write+0xa6>
+ d5a:	e9 eb       	ldi	r30, 0xB9	; 185
+ d5c:	f0 e0       	ldi	r31, 0x00	; 0
+ d5e:	80 81       	ld	r24, Z
+ d60:	88 2f       	mov	r24, r24
+ d62:	90 e0       	ldi	r25, 0x00	; 0
+ d64:	88 7f       	andi	r24, 0xF8	; 248
+ d66:	90 70       	andi	r25, 0x00	; 0
+ d68:	80 35       	cpi	r24, 0x50	; 80
+ d6a:	91 05       	cpc	r25, r1
+ d6c:	91 f0       	breq	.+36     	; 0xd92 <I2C_write+0xa6>
+ d6e:	0e 94 dc 06 	call	0xdb8	; 0xdb8 <ERROR_TRANSMISSION>
+ d72:	0f c0       	rjmp	.+30     	; 0xd92 <I2C_write+0xa6>
+ d74:	e9 eb       	ldi	r30, 0xB9	; 185
+ d76:	f0 e0       	ldi	r31, 0x00	; 0
+ d78:	80 81       	ld	r24, Z
+ d7a:	88 2f       	mov	r24, r24
+ d7c:	90 e0       	ldi	r25, 0x00	; 0
+ d7e:	88 7f       	andi	r24, 0xF8	; 248
+ d80:	90 70       	andi	r25, 0x00	; 0
+ d82:	80 35       	cpi	r24, 0x50	; 80
+ d84:	91 05       	cpc	r25, r1
+ d86:	29 f0       	breq	.+10     	; 0xd92 <I2C_write+0xa6>
+ d88:	0e 94 dc 06 	call	0xdb8	; 0xdb8 <ERROR_TRANSMISSION>
+ d8c:	02 c0       	rjmp	.+4      	; 0xd92 <I2C_write+0xa6>
+ d8e:	0e 94 dc 06 	call	0xdb8	; 0xdb8 <ERROR_TRANSMISSION>
+ d92:	0f 90       	pop	r0
+ d94:	0f 90       	pop	r0
+ d96:	0f 90       	pop	r0
+ d98:	0f 90       	pop	r0
+ d9a:	0f 90       	pop	r0
+ d9c:	cf 91       	pop	r28
+ d9e:	df 91       	pop	r29
+ da0:	08 95       	ret
+
+00000da2 <I2C_stop>:
+ da2:	df 93       	push	r29
+ da4:	cf 93       	push	r28
+ da6:	cd b7       	in	r28, 0x3d	; 61
+ da8:	de b7       	in	r29, 0x3e	; 62
+ daa:	ec eb       	ldi	r30, 0xBC	; 188
+ dac:	f0 e0       	ldi	r31, 0x00	; 0
+ dae:	84 e9       	ldi	r24, 0x94	; 148
+ db0:	80 83       	st	Z, r24
+ db2:	cf 91       	pop	r28
+ db4:	df 91       	pop	r29
+ db6:	08 95       	ret
+
+00000db8 <ERROR_TRANSMISSION>:
+ db8:	df 93       	push	r29
+ dba:	cf 93       	push	r28
+ dbc:	cd b7       	in	r28, 0x3d	; 61
+ dbe:	de b7       	in	r29, 0x3e	; 62
+ dc0:	cf 91       	pop	r28
+ dc2:	df 91       	pop	r29
+ dc4:	08 95       	ret
+
+00000dc6 <port>:
+* NAME: port()
+* DESCRIPTION: initialize ports
+* RETURN: none
+***********************************************************/
+void port()
+{
+ dc6:	df 93       	push	r29
+ dc8:	cf 93       	push	r28
+ dca:	cd b7       	in	r28, 0x3d	; 61
+ dcc:	de b7       	in	r29, 0x3e	; 62
+     /* PULL UP CONFIGURATION FOR INPUT */
+    sbiBF(PORTD,PD2); // PUSH BUTTON 1
+ dce:	ab e2       	ldi	r26, 0x2B	; 43
+ dd0:	b0 e0       	ldi	r27, 0x00	; 0
+ dd2:	eb e2       	ldi	r30, 0x2B	; 43
+ dd4:	f0 e0       	ldi	r31, 0x00	; 0
+ dd6:	80 81       	ld	r24, Z
+ dd8:	84 60       	ori	r24, 0x04	; 4
+ dda:	8c 93       	st	X, r24
+    sbiBF(PORTD,PD3); // PUSH BUTTON 2
+ ddc:	ab e2       	ldi	r26, 0x2B	; 43
+ dde:	b0 e0       	ldi	r27, 0x00	; 0
+ de0:	eb e2       	ldi	r30, 0x2B	; 43
+ de2:	f0 e0       	ldi	r31, 0x00	; 0
+ de4:	80 81       	ld	r24, Z
+ de6:	88 60       	ori	r24, 0x08	; 8
+ de8:	8c 93       	st	X, r24
+
+    // outputs:
+    sbiBF(DDRD,DDD5);
+ dea:	aa e2       	ldi	r26, 0x2A	; 42
+ dec:	b0 e0       	ldi	r27, 0x00	; 0
+ dee:	ea e2       	ldi	r30, 0x2A	; 42
+ df0:	f0 e0       	ldi	r31, 0x00	; 0
+ df2:	80 81       	ld	r24, Z
+ df4:	80 62       	ori	r24, 0x20	; 32
+ df6:	8c 93       	st	X, r24
+    sbiBF(DDRD,DDD6);
+ df8:	aa e2       	ldi	r26, 0x2A	; 42
+ dfa:	b0 e0       	ldi	r27, 0x00	; 0
+ dfc:	ea e2       	ldi	r30, 0x2A	; 42
+ dfe:	f0 e0       	ldi	r31, 0x00	; 0
+ e00:	80 81       	ld	r24, Z
+ e02:	80 64       	ori	r24, 0x40	; 64
+ e04:	8c 93       	st	X, r24
+    sbiBF(DDRD,DDD7);
+ e06:	aa e2       	ldi	r26, 0x2A	; 42
+ e08:	b0 e0       	ldi	r27, 0x00	; 0
+ e0a:	ea e2       	ldi	r30, 0x2A	; 42
+ e0c:	f0 e0       	ldi	r31, 0x00	; 0
+ e0e:	80 81       	ld	r24, Z
+ e10:	80 68       	ori	r24, 0x80	; 128
+ e12:	8c 93       	st	X, r24
+
+
+}
+ e14:	cf 91       	pop	r28
+ e16:	df 91       	pop	r29
+ e18:	08 95       	ret
+
+00000e1a <interrupt>:
+* NAME: interrupt()
+* DESCRIPTION: initialize interruptions
+* RETURN: none
+***********************************************************/
+void interrupt()
+{
+ e1a:	df 93       	push	r29
+ e1c:	cf 93       	push	r28
+ e1e:	cd b7       	in	r28, 0x3d	; 61
+ e20:	de b7       	in	r29, 0x3e	; 62
+    // interruption on falling edge:
+    // EICRA:
+    sbiBF(EICRA,ISC11);
+ e22:	a9 e6       	ldi	r26, 0x69	; 105
+ e24:	b0 e0       	ldi	r27, 0x00	; 0
+ e26:	e9 e6       	ldi	r30, 0x69	; 105
+ e28:	f0 e0       	ldi	r31, 0x00	; 0
+ e2a:	80 81       	ld	r24, Z
+ e2c:	88 60       	ori	r24, 0x08	; 8
+ e2e:	8c 93       	st	X, r24
+    sbiBF(EICRA,ISC01);
+ e30:	a9 e6       	ldi	r26, 0x69	; 105
+ e32:	b0 e0       	ldi	r27, 0x00	; 0
+ e34:	e9 e6       	ldi	r30, 0x69	; 105
+ e36:	f0 e0       	ldi	r31, 0x00	; 0
+ e38:	80 81       	ld	r24, Z
+ e3a:	82 60       	ori	r24, 0x02	; 2
+ e3c:	8c 93       	st	X, r24
+
+    // EIMSK:
+    sbiBF(EIMSK,INT1);
+ e3e:	ad e3       	ldi	r26, 0x3D	; 61
+ e40:	b0 e0       	ldi	r27, 0x00	; 0
+ e42:	ed e3       	ldi	r30, 0x3D	; 61
+ e44:	f0 e0       	ldi	r31, 0x00	; 0
+ e46:	80 81       	ld	r24, Z
+ e48:	82 60       	ori	r24, 0x02	; 2
+ e4a:	8c 93       	st	X, r24
+    sbiBF(EIMSK,INT0);
+ e4c:	ad e3       	ldi	r26, 0x3D	; 61
+ e4e:	b0 e0       	ldi	r27, 0x00	; 0
+ e50:	ed e3       	ldi	r30, 0x3D	; 61
+ e52:	f0 e0       	ldi	r31, 0x00	; 0
+ e54:	80 81       	ld	r24, Z
+ e56:	81 60       	ori	r24, 0x01	; 1
+ e58:	8c 93       	st	X, r24
+
+}
+ e5a:	cf 91       	pop	r28
+ e5c:	df 91       	pop	r29
+ e5e:	08 95       	ret
+
+00000e60 <reset_LED>:
+* NAME: reset_LED()
+* DESCRIPTION: reset all led states
+* RETURN: none
+***********************************************************/
+void reset_LED()
+{
+ e60:	df 93       	push	r29
+ e62:	cf 93       	push	r28
+ e64:	cd b7       	in	r28, 0x3d	; 61
+ e66:	de b7       	in	r29, 0x3e	; 62
+    cbiBF(PORTD,PD5);
+ e68:	ab e2       	ldi	r26, 0x2B	; 43
+ e6a:	b0 e0       	ldi	r27, 0x00	; 0
+ e6c:	eb e2       	ldi	r30, 0x2B	; 43
+ e6e:	f0 e0       	ldi	r31, 0x00	; 0
+ e70:	80 81       	ld	r24, Z
+ e72:	8f 7d       	andi	r24, 0xDF	; 223
+ e74:	8c 93       	st	X, r24
+    cbiBF(PORTD,PD6);
+ e76:	ab e2       	ldi	r26, 0x2B	; 43
+ e78:	b0 e0       	ldi	r27, 0x00	; 0
+ e7a:	eb e2       	ldi	r30, 0x2B	; 43
+ e7c:	f0 e0       	ldi	r31, 0x00	; 0
+ e7e:	80 81       	ld	r24, Z
+ e80:	8f 7b       	andi	r24, 0xBF	; 191
+ e82:	8c 93       	st	X, r24
+    cbiBF(PORTD,PD7);
+ e84:	ab e2       	ldi	r26, 0x2B	; 43
+ e86:	b0 e0       	ldi	r27, 0x00	; 0
+ e88:	eb e2       	ldi	r30, 0x2B	; 43
+ e8a:	f0 e0       	ldi	r31, 0x00	; 0
+ e8c:	80 81       	ld	r24, Z
+ e8e:	8f 77       	andi	r24, 0x7F	; 127
+ e90:	8c 93       	st	X, r24
+
+}
+ e92:	cf 91       	pop	r28
+ e94:	df 91       	pop	r29
+ e96:	08 95       	ret
+
+00000e98 <main>:
+#include "codec_digital.h"
+#include "codec_fileTest.h"
+#include "init_port.h"
+
+int main(void)
+{
+ e98:	df 93       	push	r29
+ e9a:	cf 93       	push	r28
+ e9c:	cd b7       	in	r28, 0x3d	; 61
+ e9e:	de b7       	in	r29, 0x3e	; 62
+    /**********************************************************
+    * FUNCTIONS TESTS:
+    ***********************************************************/
+    // initialisation port and interrupt
+    port();
+ ea0:	0e 94 e3 06 	call	0xdc6	; 0xdc6 <port>
+    interrupt();
+ ea4:	0e 94 0d 07 	call	0xe1a	; 0xe1a <interrupt>
+    sei(); // open the global interruput mask
+ ea8:	78 94       	sei
+
+    sbiBF(PORTD,PD5); // activate the "STAND BY" diode LED
+ eaa:	ab e2       	ldi	r26, 0x2B	; 43
+ eac:	b0 e0       	ldi	r27, 0x00	; 0
+ eae:	eb e2       	ldi	r30, 0x2B	; 43
+ eb0:	f0 e0       	ldi	r31, 0x00	; 0
+ eb2:	80 81       	ld	r24, Z
+ eb4:	80 62       	ori	r24, 0x20	; 32
+ eb6:	8c 93       	st	X, r24
+    codec_default(); // set codec parameters to default
+ eb8:	0e 94 63 03 	call	0x6c6	; 0x6c6 <codec_default>
+ ebc:	ff cf       	rjmp	.-2      	; 0xebc <main+0x24>
+
+00000ebe <__vector_1>:
+***********************************************************/
+
+
+/** ANALOG PATH **/
+ISR(INT0_vect)
+{
+ ebe:	1f 92       	push	r1
+ ec0:	0f 92       	push	r0
+ ec2:	0f b6       	in	r0, 0x3f	; 63
+ ec4:	0f 92       	push	r0
+ ec6:	11 24       	eor	r1, r1
+ ec8:	2f 93       	push	r18
+ eca:	3f 93       	push	r19
+ ecc:	4f 93       	push	r20
+ ece:	5f 93       	push	r21
+ ed0:	6f 93       	push	r22
+ ed2:	7f 93       	push	r23
+ ed4:	8f 93       	push	r24
+ ed6:	9f 93       	push	r25
+ ed8:	af 93       	push	r26
+ eda:	bf 93       	push	r27
+ edc:	ef 93       	push	r30
+ ede:	ff 93       	push	r31
+ ee0:	df 93       	push	r29
+ ee2:	cf 93       	push	r28
+ ee4:	cd b7       	in	r28, 0x3d	; 61
+ ee6:	de b7       	in	r29, 0x3e	; 62
+    cli();
+ ee8:	f8 94       	cli
+    // code:
+    reset_LED();
+ eea:	0e 94 30 07 	call	0xe60	; 0xe60 <reset_LED>
+    sbiBF(PORTD,PD6);
+ eee:	ab e2       	ldi	r26, 0x2B	; 43
+ ef0:	b0 e0       	ldi	r27, 0x00	; 0
+ ef2:	eb e2       	ldi	r30, 0x2B	; 43
+ ef4:	f0 e0       	ldi	r31, 0x00	; 0
+ ef6:	80 81       	ld	r24, Z
+ ef8:	80 64       	ori	r24, 0x40	; 64
+ efa:	8c 93       	st	X, r24
+
+    /** CODEC FUNCTION **/
+    codec_mic_ADC();
+ efc:	0e 94 27 01 	call	0x24e	; 0x24e <codec_mic_ADC>
+
+    sei();
+ f00:	78 94       	sei
+
+}
+ f02:	cf 91       	pop	r28
+ f04:	df 91       	pop	r29
+ f06:	ff 91       	pop	r31
+ f08:	ef 91       	pop	r30
+ f0a:	bf 91       	pop	r27
+ f0c:	af 91       	pop	r26
+ f0e:	9f 91       	pop	r25
+ f10:	8f 91       	pop	r24
+ f12:	7f 91       	pop	r23
+ f14:	6f 91       	pop	r22
+ f16:	5f 91       	pop	r21
+ f18:	4f 91       	pop	r20
+ f1a:	3f 91       	pop	r19
+ f1c:	2f 91       	pop	r18
+ f1e:	0f 90       	pop	r0
+ f20:	0f be       	out	0x3f, r0	; 63
+ f22:	0f 90       	pop	r0
+ f24:	1f 90       	pop	r1
+ f26:	18 95       	reti
+
+00000f28 <__vector_2>:
+
+/** DIGITAL PATH **/
+ISR(INT1_vect)
+{
+ f28:	1f 92       	push	r1
+ f2a:	0f 92       	push	r0
+ f2c:	0f b6       	in	r0, 0x3f	; 63
+ f2e:	0f 92       	push	r0
+ f30:	11 24       	eor	r1, r1
+ f32:	2f 93       	push	r18
+ f34:	3f 93       	push	r19
+ f36:	4f 93       	push	r20
+ f38:	5f 93       	push	r21
+ f3a:	6f 93       	push	r22
+ f3c:	7f 93       	push	r23
+ f3e:	8f 93       	push	r24
+ f40:	9f 93       	push	r25
+ f42:	af 93       	push	r26
+ f44:	bf 93       	push	r27
+ f46:	ef 93       	push	r30
+ f48:	ff 93       	push	r31
+ f4a:	df 93       	push	r29
+ f4c:	cf 93       	push	r28
+ f4e:	cd b7       	in	r28, 0x3d	; 61
+ f50:	de b7       	in	r29, 0x3e	; 62
+    cli();
+ f52:	f8 94       	cli
+    // code:
+    reset_LED();
+ f54:	0e 94 30 07 	call	0xe60	; 0xe60 <reset_LED>
+    sbiBF(PORTD,PD7);
+ f58:	ab e2       	ldi	r26, 0x2B	; 43
+ f5a:	b0 e0       	ldi	r27, 0x00	; 0
+ f5c:	eb e2       	ldi	r30, 0x2B	; 43
+ f5e:	f0 e0       	ldi	r31, 0x00	; 0
+ f60:	80 81       	ld	r24, Z
+ f62:	80 68       	ori	r24, 0x80	; 128
+ f64:	8c 93       	st	X, r24
+
+    /** CODEC FUNCTION **/
+    codec_line_ADC();
+ f66:	0e 94 82 01 	call	0x304	; 0x304 <codec_line_ADC>
+
+    sei();
+ f6a:	78 94       	sei
+
+}
+ f6c:	cf 91       	pop	r28
+ f6e:	df 91       	pop	r29
+ f70:	ff 91       	pop	r31
+ f72:	ef 91       	pop	r30
+ f74:	bf 91       	pop	r27
+ f76:	af 91       	pop	r26
+ f78:	9f 91       	pop	r25
+ f7a:	8f 91       	pop	r24
+ f7c:	7f 91       	pop	r23
+ f7e:	6f 91       	pop	r22
+ f80:	5f 91       	pop	r21
+ f82:	4f 91       	pop	r20
+ f84:	3f 91       	pop	r19
+ f86:	2f 91       	pop	r18
+ f88:	0f 90       	pop	r0
+ f8a:	0f be       	out	0x3f, r0	; 63
+ f8c:	0f 90       	pop	r0
+ f8e:	1f 90       	pop	r1
+ f90:	18 95       	reti
+
+00000f92 <_exit>:
+ f92:	f8 94       	cli
+
+00000f94 <__stop_program>:
+ f94:	ff cf       	rjmp	.-2      	; 0xf94 <__stop_program>

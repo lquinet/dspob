@@ -1,0 +1,61 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow Model Setup 'DSP_BLOCK:DSP_BLOCKinst|DSP_CLK:DSP_CLKinst|sBCLK'
+Slack : -1.481
+TNS   : -35.455
+
+Type  : Slow Model Setup 'PLL_MFILEinst|altpll_component|pll|clk[0]'
+Slack : -0.177
+TNS   : -0.177
+
+Type  : Slow Model Hold 'PLL_MFILEinst|altpll_component|pll|clk[0]'
+Slack : -0.049
+TNS   : -0.049
+
+Type  : Slow Model Hold 'DSP_BLOCK:DSP_BLOCKinst|DSP_CLK:DSP_CLKinst|sBCLK'
+Slack : 0.391
+TNS   : 0.000
+
+Type  : Slow Model Minimum Pulse Width 'DSP_BLOCK:DSP_BLOCKinst|DSP_CLK:DSP_CLKinst|sBCLK'
+Slack : -0.500
+TNS   : -42.000
+
+Type  : Slow Model Minimum Pulse Width 'iDSPOB_CLK28'
+Slack : 17.464
+TNS   : 0.000
+
+Type  : Slow Model Minimum Pulse Width 'PLL_MFILEinst|altpll_component|pll|clk[0]'
+Slack : 26.166
+TNS   : 0.000
+
+Type  : Fast Model Setup 'DSP_BLOCK:DSP_BLOCKinst|DSP_CLK:DSP_CLKinst|sBCLK'
+Slack : -0.226
+TNS   : -6.117
+
+Type  : Fast Model Setup 'PLL_MFILEinst|altpll_component|pll|clk[0]'
+Slack : -0.093
+TNS   : -0.093
+
+Type  : Fast Model Hold 'PLL_MFILEinst|altpll_component|pll|clk[0]'
+Slack : -0.023
+TNS   : -0.023
+
+Type  : Fast Model Hold 'DSP_BLOCK:DSP_BLOCKinst|DSP_CLK:DSP_CLKinst|sBCLK'
+Slack : 0.215
+TNS   : 0.000
+
+Type  : Fast Model Minimum Pulse Width 'DSP_BLOCK:DSP_BLOCKinst|DSP_CLK:DSP_CLKinst|sBCLK'
+Slack : -0.500
+TNS   : -42.000
+
+Type  : Fast Model Minimum Pulse Width 'iDSPOB_CLK28'
+Slack : 17.464
+TNS   : 0.000
+
+Type  : Fast Model Minimum Pulse Width 'PLL_MFILEinst|altpll_component|pll|clk[0]'
+Slack : 26.166
+TNS   : 0.000
+
+------------------------------------------------------------

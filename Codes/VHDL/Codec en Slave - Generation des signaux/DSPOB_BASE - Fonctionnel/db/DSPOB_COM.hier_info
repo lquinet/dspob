@@ -1,0 +1,155 @@
+|DSPOB_COM
+iDSPOB_RST => DSP_BLOCK:DSP_BLOCKinst.iDSP_RST
+iDSPOB_RST => PLL_MFILE:PLL_MFILEinst.areset
+iDSPOB_CLK28 => PLL_MFILE:PLL_MFILEinst.inclk0
+iDSPOB_SDA => I2C_COM:I2C_COMinst.iSDA
+iDSPOB_SCL => I2C_COM:I2C_COMinst.iSCL
+oDSPOB_SDA <= I2C_COM:I2C_COMinst.oSDA
+oDSPOB_SCL <= I2C_COM:I2C_COMinst.oSCL
+oDSPOB_WM8731CLK <= PLL_MFILE:PLL_MFILEinst.c0
+iDSPOB_ADCdata => DSP_BLOCK:DSP_BLOCKinst.iDSP_ADCdata
+iDSPOB_ADCdata => GPIO_COMP:GPIO_COMPinst.iGPIO_ADCin
+oDSPOB_DACdata <= DSP_BLOCK:DSP_BLOCKinst.oDSP_DACdata
+oDSPOB_BCLK <= DSP_BLOCK:DSP_BLOCKinst.oDSP_BCLK
+oDSPOB_ADCLRC <= DSP_BLOCK:DSP_BLOCKinst.oDSP_ADCLRC
+oDSPOB_DACLRC <= DSP_BLOCK:DSP_BLOCKinst.oDSP_DACLRC
+oGPIO_MCLK <= GPIO_COMP:GPIO_COMPinst.oGPIO_MCLK
+oGPIO_BCLK <= GPIO_COMP:GPIO_COMPinst.oGPIO_BCLK
+oGPIO_ADCLRC <= GPIO_COMP:GPIO_COMPinst.oGPIO_ADCLRC
+oGPIO_DACLRC <= GPIO_COMP:GPIO_COMPinst.oGPIO_DACLRC
+oGPIO_ADCdata <= GPIO_COMP:GPIO_COMPinst.oGPIO_ADCin
+oGPIO_DACdata <= GPIO_COMP:GPIO_COMPinst.oGPIO_DACout
+
+
+|DSPOB_COM|I2C_COM:I2C_COMinst
+iSDA => oSDA.DATAIN
+iSCL => oSCL.DATAIN
+oSDA <= iSDA.DB_MAX_OUTPUT_PORT_TYPE
+oSCL <= iSCL.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|DSPOB_COM|PLL_MFILE:PLL_MFILEinst
+areset => altpll:altpll_component.areset
+inclk0 => altpll:altpll_component.inclk[0]
+c0 <= altpll:altpll_component.clk[0]
+
+
+|DSPOB_COM|PLL_MFILE:PLL_MFILEinst|altpll:altpll_component
+inclk[0] => pll.CLK
+inclk[1] => ~NO_FANOUT~
+fbin => ~NO_FANOUT~
+pllena => ~NO_FANOUT~
+clkswitch => ~NO_FANOUT~
+areset => pll.ARESET
+pfdena => ~NO_FANOUT~
+clkena[0] => ~NO_FANOUT~
+clkena[1] => ~NO_FANOUT~
+clkena[2] => ~NO_FANOUT~
+clkena[3] => ~NO_FANOUT~
+clkena[4] => ~NO_FANOUT~
+clkena[5] => ~NO_FANOUT~
+extclkena[0] => ~NO_FANOUT~
+extclkena[1] => ~NO_FANOUT~
+extclkena[2] => ~NO_FANOUT~
+extclkena[3] => ~NO_FANOUT~
+scanclk => ~NO_FANOUT~
+scanclkena => ~NO_FANOUT~
+scanaclr => ~NO_FANOUT~
+scanread => ~NO_FANOUT~
+scanwrite => ~NO_FANOUT~
+scandata => ~NO_FANOUT~
+phasecounterselect[0] => ~NO_FANOUT~
+phasecounterselect[1] => ~NO_FANOUT~
+phasecounterselect[2] => ~NO_FANOUT~
+phasecounterselect[3] => ~NO_FANOUT~
+phaseupdown => ~NO_FANOUT~
+phasestep => ~NO_FANOUT~
+configupdate => ~NO_FANOUT~
+fbmimicbidir <> <GND>
+clk[0] <= clk[0].DB_MAX_OUTPUT_PORT_TYPE
+clk[1] <= <GND>
+clk[2] <= <GND>
+clk[3] <= <GND>
+clk[4] <= <GND>
+clk[5] <= <GND>
+extclk[0] <= <GND>
+extclk[1] <= <GND>
+extclk[2] <= <GND>
+extclk[3] <= <GND>
+clkbad[0] <= <GND>
+clkbad[1] <= <GND>
+enable1 <= <GND>
+enable0 <= <GND>
+activeclock <= <GND>
+clkloss <= <GND>
+locked <= <GND>
+scandataout <= <GND>
+scandone <= <GND>
+sclkout0 <= <GND>
+sclkout1 <= sclkout1.DB_MAX_OUTPUT_PORT_TYPE
+phasedone <= <GND>
+vcooverrange <= <GND>
+vcounderrange <= <GND>
+fbout <= <GND>
+fref <= <GND>
+icdrclk <= <GND>
+
+
+|DSPOB_COM|DSP_BLOCK:DSP_BLOCKinst
+iDSP_RST => DSP_CLK:DSP_CLKinst.iDSPC_RST
+iDSP_MCLK => DSP_CLK:DSP_CLKinst.iDSPC_MCLK
+iDSP_ADCdata => oDSP_DACdata.DATAIN
+oDSP_DACdata <= iDSP_ADCdata.DB_MAX_OUTPUT_PORT_TYPE
+oDSP_BCLK <= DSP_CLK:DSP_CLKinst.oDSPC_BCLK
+oDSP_ADCLRC <= DSP_CLK:DSP_CLKinst.oDSPC_ADCLRC
+oDSP_DACLRC <= DSP_CLK:DSP_CLKinst.oDSPC_DACLRC
+
+
+|DSPOB_COM|DSP_BLOCK:DSP_BLOCKinst|DSP_CLK:DSP_CLKinst
+iDSPC_RST => sBCLK.ACLR
+iDSPC_RST => sBCLK_CNT[0].ACLR
+iDSPC_RST => sBCLK_CNT[1].ACLR
+iDSPC_RST => sBCLK_CNT[2].ACLR
+iDSPC_RST => sBCLK_CNT[3].ACLR
+iDSPC_RST => sBCLK_CNT[4].ACLR
+iDSPC_RST => sBCLK_CNT[5].ACLR
+iDSPC_RST => sBCLK_CNT[6].ACLR
+iDSPC_RST => sBCLK_CNT[7].ACLR
+iDSPC_RST => sLRC.ACLR
+iDSPC_RST => sLRC_CNT[0].ACLR
+iDSPC_RST => sLRC_CNT[1].ACLR
+iDSPC_RST => sLRC_CNT[2].ACLR
+iDSPC_RST => sLRC_CNT[3].ACLR
+iDSPC_RST => sLRC_CNT[4].ACLR
+iDSPC_RST => sLRC_CNT[5].ACLR
+iDSPC_RST => sLRC_CNT[6].ACLR
+iDSPC_RST => sLRC_CNT[7].ACLR
+iDSPC_MCLK => sBCLK.CLK
+iDSPC_MCLK => sBCLK_CNT[0].CLK
+iDSPC_MCLK => sBCLK_CNT[1].CLK
+iDSPC_MCLK => sBCLK_CNT[2].CLK
+iDSPC_MCLK => sBCLK_CNT[3].CLK
+iDSPC_MCLK => sBCLK_CNT[4].CLK
+iDSPC_MCLK => sBCLK_CNT[5].CLK
+iDSPC_MCLK => sBCLK_CNT[6].CLK
+iDSPC_MCLK => sBCLK_CNT[7].CLK
+oDSPC_BCLK <= sBCLK.DB_MAX_OUTPUT_PORT_TYPE
+oDSPC_ADCLRC <= sLRC.DB_MAX_OUTPUT_PORT_TYPE
+oDSPC_DACLRC <= sLRC.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|DSPOB_COM|GPIO_COMP:GPIO_COMPinst
+iGPIO_MCLK => oGPIO_MCLK.DATAIN
+iGPIO_BCLK => oGPIO_BCLK.DATAIN
+iGPIO_ADCLRC => oGPIO_ADCLRC.DATAIN
+iGPIO_DACLRC => oGPIO_DACLRC.DATAIN
+iGPIO_ADCin => oGPIO_ADCin.DATAIN
+iGPIO_DACout => oGPIO_DACout.DATAIN
+oGPIO_MCLK <= iGPIO_MCLK.DB_MAX_OUTPUT_PORT_TYPE
+oGPIO_BCLK <= iGPIO_BCLK.DB_MAX_OUTPUT_PORT_TYPE
+oGPIO_ADCLRC <= iGPIO_ADCLRC.DB_MAX_OUTPUT_PORT_TYPE
+oGPIO_DACLRC <= iGPIO_DACLRC.DB_MAX_OUTPUT_PORT_TYPE
+oGPIO_ADCin <= iGPIO_ADCin.DB_MAX_OUTPUT_PORT_TYPE
+oGPIO_DACout <= iGPIO_DACout.DB_MAX_OUTPUT_PORT_TYPE
+
+
